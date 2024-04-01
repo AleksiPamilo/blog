@@ -35,11 +35,17 @@ export default async function Home() {
     error: Error | any;
   } = await getPosts();
 
+  // TODO: Figure out why author doesn't have slug
+  // data[0].attributes.author.data.attributes.slug
+
   return (
-    <main className="">
-      <div className="flex flex-wrap gap-4 w-full items-center justify-center">
+    <main className="flex flex-col gap-2">
+      <h1 className="px-6 font-semibold">Popular posts:</h1>
+      <div className="grid grid-cols-3 px-6 gap-4 w-full items-center justify-center">
         {data.map((data) => (
-          <BlogCard post={data.attributes} key={data.id} />
+          <div className="max-w-[35rem]" key={data.id}>
+            <BlogCard post={data.attributes} />
+          </div>
         ))}
       </div>
     </main>

@@ -23,3 +23,7 @@ export const timeAgo = (date: string) => {
     return `${years} year${years === 1 ? "" : "s"} ago`;
   }
 };
+
+export const formatTime = (date: string) => {
+  return new Date(date).toLocaleString();
+};
