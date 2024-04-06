@@ -8,7 +8,7 @@ import { headers } from "next/headers";
 export async function getUser() {
   const headersList = headers();
   const headerUrl = headersList.get("next-url" || "")?.replace("/%40", "@");
-  const strapiUrl = process.env.STRAPI_URL;
+  const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
   const res = await fetch(
     `${strapiUrl}/api/users?filters[slug]=${headerUrl}&populate=posts`,

@@ -4,7 +4,7 @@ import BlogCard from "@/components/BlogCard";
 import { IPost } from "@/interfaces/post";
 
 export async function getPosts() {
-  const strapiUrl = process.env.STRAPI_URL;
+  const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
   const res = await fetch(`${strapiUrl}/api/posts?populate=author`, {
     headers: {
       Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,

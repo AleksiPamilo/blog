@@ -2,9 +2,10 @@ import { useRef } from "react";
 import PasswordInput from "../PasswordInput";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import Errors from "@/interfaces/errors";
+
+const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 export default function LoginContent({
   closeDialog,
@@ -21,16 +22,24 @@ export default function LoginContent({
     }
 
     try {
-      const res = await signIn("credentials", {
-        email: emailRef.current?.value,
-        password: passwordRef.current?.value,
-        redirect: false,
+      const res = await fetch(`${strapiUrl}/api/auth/local`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identifier: emailRef.current.value,
+          password: passwordRef.current.value,
+        }),
       });
 
-      if (res?.error) {
-        toast.error(Errors.Auth.IncorrectCredentials);
-        return;
+      if (res.status !== 200) {
+        return toast.error(Errors.Auth.IncorrectCredentials);
       }
+
+      const { jwt } = await res.json();
+
+      localStorage.setItem("jwt-token", jwt);
 
       toast.success("Login Successful");
       closeDialog();
