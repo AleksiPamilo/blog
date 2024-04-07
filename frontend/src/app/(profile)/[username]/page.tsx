@@ -1,6 +1,7 @@
 "use server";
 
 import BlogCard from "@/components/BlogCard";
+import Loading from "@/components/Loading";
 import { IUser } from "@/interfaces/user";
 import { formatTime } from "@/utils/formatTime";
 import { headers } from "next/headers";
@@ -11,7 +12,7 @@ export async function getUser() {
   const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
   const res = await fetch(
-    `${strapiUrl}/api/users?filters[slug]=${headerUrl}&populate=posts`,
+    `${strapiUrl}/api/users?filters[slug]=${headerUrl}&populate[posts][tags]=*`,
     {
       headers: {
         Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
@@ -25,8 +26,7 @@ export async function getUser() {
 
 export default async function Profile() {
   const user: IUser = await getUser();
-
-  if (!user) return <div>Loading...</div>;
+  if (!user) return <Loading />;
 
   return (
     <div className="w-full flex flex-col gap-4 items-center justify-center">

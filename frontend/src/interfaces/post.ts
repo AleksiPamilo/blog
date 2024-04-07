@@ -1,3 +1,5 @@
+import { IImage } from "./image";
+import { ITag } from "./tag";
 import { IUser } from "./user";
 
 export interface IPost {
@@ -8,7 +10,14 @@ export interface IPost {
     data: { attributes: IUser };
   };
   slug: string;
-  images: File[];
+  tags: {
+    id: number;
+    data: ITag[];
+  };
+  images: {
+    id: number;
+    data: IImage[];
+  };
   createdAt: string;
   updatedAt: string;
   publishedAt: string;

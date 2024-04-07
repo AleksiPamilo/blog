@@ -27,3 +27,12 @@ export const timeAgo = (date: string) => {
 export const formatTime = (date: string) => {
   return new Date(date).toLocaleString();
 };
+
+export const formatDDMMYYYY = (date: string) => {
+  const time = new Date(date);
+  const currentDate = time.getDate();
+  const currrentMonth = time.getMonth() + 1;
+  const currentYear = time.getFullYear();
+
+  return currentDate + "-" + currrentMonth + "-" + currentYear;
+};
