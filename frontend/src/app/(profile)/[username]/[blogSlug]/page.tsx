@@ -2,10 +2,12 @@
 
 import Tiptap from "@/components/Editor/Tiptap";
 import Loading from "@/components/Loading";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { IPost } from "@/interfaces/post";
-import { formatDDMMYYYY } from "@/utils/formatTime";
+import { formatTime, timeAgo } from "@/utils/formatTime";
 import { headers } from "next/headers";
 import Image from "next/image";
+import Link from "next/link";
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -28,22 +30,31 @@ export async function getPost() {
 
 export default async function Post() {
     const post: IPost | undefined | null = await getPost();
+
     if (!post) return <Loading />;
 
     const author = post.author;
-    const thumbnail = post.images[0]
+    const thumbnail = post.images?.[0];
     const avatar = author.avatar;
 
     return (
-        <div className="flex flex-col items-center justify-center">
-            <div className="w-4/5">
-                <div className="w-full min-h-[10rem] relative">
-                    <Image src={strapiUrl + thumbnail.url} alt={thumbnail.alternativeText ?? "thumbnail"} className="rounded-md" fill={true} />
-                </div>
-                <div className="mt-4 flex items-center justify-between">
+        <div className="flex flex-col items-center justify-center py-16">
+            <div className="max-w-[1024px] px-4">
+                {
+                    thumbnail &&
+                    <div className="w-full min-h-[10rem] relative">
+                        <Image src={strapiUrl + thumbnail.url} alt={thumbnail.alternativeText ?? "thumbnail"} className="rounded-md" fill={true} />
+                    </div>
+                }
+                <div className="mt-4 flex max-md:flex-col max-md:gap-2 md:items-center justify-between">
                     <div>
                         <h1 className="text-xl font-semibold">{post.title}</h1>
-                        <h2>{formatDDMMYYYY(post.publishedAt)}</h2>
+                        <Tooltip>
+                            <TooltipTrigger className="cursor-text">Published {timeAgo(post.publishedAt)}</TooltipTrigger>
+                            <TooltipContent>
+                                <p>{formatTime(post.publishedAt)}</p>
+                            </TooltipContent>
+                        </Tooltip>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -55,12 +66,11 @@ export default async function Post() {
                                 fill={true}
                             />
                         </div>
-                        <span>{author.username}</span>
+                        <Link href={`/${author.slug}`} className="hover:underline">{author.username}</Link>
                     </div>
-
                 </div>
                 <div className="mt-12">
-                    <Tiptap content={post.description} />
+                    <Tiptap content={post.description} editable={false} />
                 </div>
             </div>
         </div>
