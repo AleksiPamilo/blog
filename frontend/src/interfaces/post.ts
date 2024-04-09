@@ -3,21 +3,13 @@ import { ITag } from "./tag";
 import { IUser } from "./user";
 
 export interface IPost {
+  id: number;
   title: string;
   description: string;
-  author: {
-    id: number;
-    data: { attributes: IUser };
-  };
+  author: IUser;
   slug: string;
-  tags: {
-    id: number;
-    data: ITag[];
-  };
-  images: {
-    id: number;
-    data: IImage[];
-  };
+  tags: ITag[];
+  images: IImage[];
   createdAt: string;
   updatedAt: string;
   publishedAt: string;

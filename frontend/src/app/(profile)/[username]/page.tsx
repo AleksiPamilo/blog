@@ -2,6 +2,7 @@
 
 import BlogCard from "@/components/BlogCard";
 import Loading from "@/components/Loading";
+import { ITag } from "@/interfaces/tag";
 import { IUser } from "@/interfaces/user";
 import { formatTime } from "@/utils/formatTime";
 import { headers } from "next/headers";
@@ -12,7 +13,7 @@ export async function getUser() {
   const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
   const res = await fetch(
-    `${strapiUrl}/api/users?filters[slug]=${headerUrl}&populate[posts][tags]=*`,
+    `${strapiUrl}/api/users?filters[slug]=${headerUrl}&populate[0]=posts&populate[1]=posts.tags`,
     {
       headers: {
         Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
@@ -40,7 +41,8 @@ export default async function Profile() {
         <h1>User's blog posts:</h1>
         {user.posts.map((post) => (
           <BlogCard post={post} author={user} key={post.slug} />
-        ))}
+        )
+        )}
       </div>
     </div>
   );

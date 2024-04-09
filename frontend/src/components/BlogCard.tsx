@@ -18,41 +18,51 @@ export default function BlogCard({
   author?: IUser;
 }) {
   const router = useRouter();
-  author = author ?? post.author.data.attributes;
+  const user = author ?? post.author;
 
-  if (!author) {
+  if (!user) {
     return <SkeletonCard />;
   }
 
-  const image = post.images.data[0].attributes;
-  const thumbnail = strapiUrl + image.url;
+  const image = post.images?.[0];
+  const thumbnail = strapiUrl + image?.url;
 
   return (
     <button
-      className="flex flex-col relative w-full h-[25rem] rounded-md shadow-md bg-zinc-100 hover:scale-105"
+      className="flex flex-col relative w-[23rem] h-[25rem] rounded-md shadow-md bg-zinc-100 hover:scale-105"
       onClick={() => {
-        router.push(`/${author.slug}/${post.slug}`);
+        router.push(`/${user.slug}/${post.slug}`);
       }}
     >
       <div className="w-full relative h-1/2 border-b">
-        <Image
-          src={thumbnail}
-          alt={image.alternativeText ?? "thumbnail"}
-          className="object-fill rounded-t-md"
-          fill={true}
-        />
+        {image ?
+          <Image
+            src={thumbnail}
+            alt={image.alternativeText ?? "thumbnail"}
+            className="object-fill rounded-t-md"
+            fill={true}
+          />
+          : <div className={`
+          ${[
+              "from-emerald-400 to-pink-400",
+              "from-fuchsia-300 to-emerald-500",
+              "from-cyan-200 to-violet-500",
+              "from-lime-500 to-rose-400"
+            ][Math.floor(Math.random() * 4)]} bg-gradient-to-br w-full h-full rounded-t-md
+          `} />
+        }
       </div>
       <div className="w-full h-max p-2">
         <div className="flex gap-2">
-          {post.tags.data.slice(0, 2).map((tag) => (
+          {post.tags.slice(0, 2).map((tag) => (
             <span
               key={tag.id}
               className="py-2 px-4 rounded-lg text-zinc-200"
               style={{
-                backgroundColor: tag.attributes.color,
+                backgroundColor: tag.color,
               }}
             >
-              {tag.attributes.name}
+              {tag.name}
             </span>
           ))}
         </div>
@@ -65,10 +75,10 @@ export default function BlogCard({
         <span>{formatDDMMYYYY(post.publishedAt)}</span>
         <Link
           onClick={(e) => e.stopPropagation()}
-          href={`/@${author.username}`}
+          href={`/@${user.username}`}
           className="hover:underline"
         >
-          {author.slug}
+          {user.slug}
         </Link>
       </footer>
     </button>
