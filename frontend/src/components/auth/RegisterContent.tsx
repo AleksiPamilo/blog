@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import validateEmail from "@/utils/validateEmail";
 import Errors from "@/interfaces/errors";
 
+const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+
 export default function RegisterContent({
   closeDialog,
 }: {
@@ -42,7 +44,7 @@ export default function RegisterContent({
       return;
     }
 
-    fetch("http://localhost:1337/api/auth/local/register", {
+    fetch(`${strapiUrl}/api/auth/local/registe`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

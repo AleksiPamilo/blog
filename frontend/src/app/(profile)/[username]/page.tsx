@@ -1,32 +1,31 @@
-"use server";
+"use client";
 
 import BlogCard from "@/components/BlogCard";
 import Loading from "@/components/Loading";
-import { ITag } from "@/interfaces/tag";
 import { IUser } from "@/interfaces/user";
 import { formatTime } from "@/utils/formatTime";
-import { headers } from "next/headers";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export async function getUser() {
-  const headersList = headers();
-  const headerUrl = headersList.get("next-url" || "")?.replace("/%40", "@");
-  const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  const res = await fetch(
-    `${strapiUrl}/api/users?filters[slug]=${headerUrl}&populate[0]=posts&populate[1]=posts.tags`,
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
-      },
-    }
-  );
+export default function Profile() {
+  const [user, setUser] = useState<IUser | null>(null);
+  const pathname = usePathname();
 
-  const json = await res.json();
-  return json[0];
-}
+  useEffect(() => {
+    const slug = pathname.split("/")[1];
 
-export default async function Profile() {
-  const user: IUser = await getUser();
+    fetch(`${apiUrl}/api/users?slug=${slug}&populate=posts,posts.tags,posts.images`).then(async (data) => {
+      const json = await data.json();
+      const user = json?.data?.[0];
+
+      setUser(user);
+    }).catch(() => {
+      setUser(null);
+    });
+  }, []);
+
   if (!user) return <Loading />;
 
   return (
@@ -38,11 +37,10 @@ export default async function Profile() {
         </div>
       </div>
       <div className="w-4/5 flex flex-col gap-3">
-        <h1>User's blog posts:</h1>
+        <h1>User{"'"}s blog posts:</h1>
         {user.posts.map((post) => (
           <BlogCard post={post} author={user} key={post.slug} />
-        )
-        )}
+        ))}
       </div>
     </div>
   );

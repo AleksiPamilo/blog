@@ -1,40 +1,39 @@
-"use server";
+"use client";
 
 import Tiptap from "@/components/Editor/Tiptap";
 import Loading from "@/components/Loading";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { IPost } from "@/interfaces/post";
 import { formatTime, timeAgo } from "@/utils/formatTime";
-import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export async function getPost() {
-    const headersList = headers();
-    const headerUrl = headersList.get("next-url" || "")?.replace("/%40", "@");
-    const blogSlug = headerUrl?.split("/")[1];
-    const res = await fetch(
-        `${strapiUrl}/api/posts?filters[slug]=${blogSlug}&populate=[0]=author&populate[1]=images&populate[2]=tags&populate[3]=author.avatar`,
-        {
-            headers: {
-                Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
-            },
-        }
-    );
+export default function Post() {
+    const [post, setPost] = useState<IPost | null>(null);
+    const pathname = usePathname();
 
-    const json = await res.json();
-    return json?.data[0];
-}
+    useEffect(() => {
+        const blogSlug = pathname.split("/")[2];
 
-export default async function Post() {
-    const post: IPost | undefined | null = await getPost();
+        fetch(`${apiUrl}/api/posts?slug=${blogSlug}&populate=author,images,tags,author.avatar&sort=true`).then(async (data) => {
+            const json = await data.json();
+            const post = json?.data?.[0];
+
+            setPost(post);
+        }).catch(() => {
+            setPost(null);
+        });
+    }, []);
 
     if (!post) return <Loading />;
 
     const author = post.author;
-    const thumbnail = post.images?.[0];
+    const thumbnail = post.images?.find(x => x.caption === "thumbnail");
     const avatar = author.avatar;
 
     return (
