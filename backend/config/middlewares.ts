@@ -11,6 +11,7 @@ export default [
         'https://api.blog.aleksipamilo.dev',
         'https://blog.aleksipamilo.dev',
         'http://localhost:1337',
+        'http://localhost:3000',
         'http://host.docker.internal:1337',
         'http://host.docker.internal:3001'
       ]

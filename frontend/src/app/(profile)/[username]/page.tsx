@@ -24,7 +24,7 @@ export default function Profile() {
     }).catch(() => {
       setUser(null);
     });
-  }, []);
+  }, [pathname]);
 
   if (!user) return <Loading />;
 

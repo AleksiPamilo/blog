@@ -1,8 +1,10 @@
 "use client";
 
+import CommentSection from "@/components/CommentSection";
 import Tiptap from "@/components/Editor/Tiptap";
 import Loading from "@/components/Loading";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { IComment } from "@/interfaces/comment";
 import { IPost } from "@/interfaces/post";
 import { formatTime, timeAgo } from "@/utils/formatTime";
 import Image from "next/image";
@@ -23,12 +25,11 @@ export default function Post() {
         fetch(`${apiUrl}/api/posts?slug=${blogSlug}&populate=author,images,tags,author.avatar&sort=true`).then(async (data) => {
             const json = await data.json();
             const post = json?.data?.[0];
-
             setPost(post);
         }).catch(() => {
             setPost(null);
         });
-    }, []);
+    }, [pathname]);
 
     if (!post) return <Loading />;
 
@@ -71,6 +72,8 @@ export default function Post() {
                 <div className="mt-12">
                     <Tiptap content={post.description} editable={false} />
                 </div>
+
+                <CommentSection post={post} />
             </div>
         </div>
     );

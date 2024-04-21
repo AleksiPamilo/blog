@@ -4,8 +4,12 @@ import NavItems from "@/common/NavItems";
 import Link from "next/link";
 import Login from "./auth/Login";
 import MobileNavigation from "./MobileNavigation";
+import { useAuth } from "./context/AuthProvider";
+import { Button } from "./ui/button";
 
 export default function Navigation() {
+  const { user, logout } = useAuth();
+
   return (
     <>
       <nav className="max-md:hidden w-full md:flex items-center justify-between py-3 px-6 bg-white rounded-b-lg">
@@ -23,7 +27,7 @@ export default function Navigation() {
             ))}
           </ul>
 
-          <Login />
+          {!user ? <Login /> : <Button onClick={logout}>Log out</Button>}
         </div>
       </nav>
 

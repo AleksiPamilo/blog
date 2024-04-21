@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import Errors from "@/interfaces/errors";
+import { useAuth } from "../context/AuthProvider";
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -14,6 +15,7 @@ export default function LoginContent({
 }) {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const { login } = useAuth();
 
   const submit = async () => {
     if (!emailRef.current?.value || !passwordRef.current?.value) {
@@ -37,13 +39,13 @@ export default function LoginContent({
         return toast.error(Errors.Auth.IncorrectCredentials);
       }
 
-      const { jwt } = await res.json();
+      const { jwt, user } = await res.json();
 
-      localStorage.setItem("jwt-token", jwt);
+      login(jwt, user);
 
       toast.success("Login Successful");
       closeDialog();
-    } catch {
+    } catch (e) {
       toast.error(Errors.Common.Unexpected);
     }
   };

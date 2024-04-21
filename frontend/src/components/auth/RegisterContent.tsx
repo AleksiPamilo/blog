@@ -5,6 +5,8 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import validateEmail from "@/utils/validateEmail";
 import Errors from "@/interfaces/errors";
+import createSlug from "@/utils/createSlug";
+import { useAuth } from "../context/AuthProvider";
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -17,6 +19,7 @@ export default function RegisterContent({
   const nameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const passwordConfirmRef = useRef<HTMLInputElement>(null);
+  const { login } = useAuth();
 
   const submit = () => {
     if (
@@ -44,7 +47,7 @@ export default function RegisterContent({
       return;
     }
 
-    fetch(`${strapiUrl}/api/auth/local/registe`, {
+    fetch(`${strapiUrl}/api/auth/local/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -53,9 +56,13 @@ export default function RegisterContent({
         email: emailRef.current?.value,
         username: nameRef.current?.value,
         password: passwordRef.current?.value,
+        slug: "@" + createSlug(nameRef.current?.value ?? "")
       }),
     })
-      .then(() => {
+      .then(async (res) => {
+        const { jwt, user } = await res.json();
+        login(jwt, user);
+
         toast.success("Register successful");
         closeDialog();
       })
