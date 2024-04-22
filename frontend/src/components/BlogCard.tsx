@@ -28,7 +28,7 @@ export default function BlogCard({
 
   return (
     <button
-      className="flex flex-col relative w-[23rem] h-[25rem] rounded-md shadow-md bg-zinc-100 hover:scale-105"
+      className="flex flex-col relative w-[23rem] h-[25rem] rounded-md shadow-md bg-zinc-100 hover:scale-105 transition-all ease-in-out duration-500"
       onClick={() => {
         router.push(`/${user.slug}/${post.slug}`);
       }}

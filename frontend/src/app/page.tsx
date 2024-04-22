@@ -21,7 +21,7 @@ export default function Home() {
       {posts &&
         <>
           <h1 className="px-6 font-semibold">Popular posts:</h1>
-          <div className="flex flex-wrap px-6 gap-4 w-full items-center justify-center">
+          <div className="flex flex-wrap py-8 px-6 gap-6 w-full items-center justify-center">
             {posts.map((post) => (
               <div key={post.id}>
                 <BlogCard post={post} />
