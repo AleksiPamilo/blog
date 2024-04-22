@@ -4,7 +4,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import validateEmail from "@/utils/validateEmail";
-import Errors from "@/interfaces/errors";
+import { Errors } from "@/interfaces";
 import createSlug from "@/utils/createSlug";
 import { useAuth } from "../context/AuthProvider";
 

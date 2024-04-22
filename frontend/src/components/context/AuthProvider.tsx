@@ -1,6 +1,6 @@
 "use client";
 
-import { IUser } from "@/interfaces/user";
+import { IUser } from "@/interfaces";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface AuthContextType {

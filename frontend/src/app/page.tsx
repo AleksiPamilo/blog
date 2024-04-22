@@ -1,7 +1,7 @@
 "use client";
 
 import BlogCard from "@/components/BlogCard";
-import { IPost } from "@/interfaces/post";
+import { IPost } from "@/interfaces";
 import { useEffect, useState } from "react";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;

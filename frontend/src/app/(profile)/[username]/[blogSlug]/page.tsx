@@ -4,8 +4,7 @@ import CommentSection from "@/components/CommentSection";
 import Tiptap from "@/components/Editor/Tiptap";
 import Loading from "@/components/Loading";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { IComment } from "@/interfaces/comment";
-import { IPost } from "@/interfaces/post";
+import { IPost } from "@/interfaces";
 import { formatTime, timeAgo } from "@/utils/formatTime";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,6 +32,7 @@ export default function Post() {
 
     if (!post) return <Loading />;
 
+    document.title = post.title;
     const author = post.author;
     const thumbnail = post.images?.find(x => x.caption === "thumbnail");
     const avatar = author.avatar;

@@ -3,8 +3,7 @@
 import { SendHorizontal } from "lucide-react";
 import Input from "./Input";
 import Comment from "./Comment";
-import { IComment } from "@/interfaces/comment";
-import { IPost } from "@/interfaces/post";
+import { IPost, IComment } from "@/interfaces";
 import { useEffect, useState } from "react";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -48,7 +47,7 @@ export default function CommentSection({ post }: { post: IPost }) {
             <div>
                 <div className="relative">
                     <Input placeholder="What do you think?" />
-                    <button onClick={() => alert("pöö")}>
+                    <button onClick={() => alert("TODO")}>
                         <SendHorizontal className="text-gray-600 mx-3 absolute right-0 top-1/2 transform -translate-y-1/2" />
                     </button>
                 </div>

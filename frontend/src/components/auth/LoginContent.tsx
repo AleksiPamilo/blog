@@ -3,7 +3,7 @@ import PasswordInput from "../PasswordInput";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-import Errors from "@/interfaces/errors";
+import { Errors } from "@/interfaces";
 import { useAuth } from "../context/AuthProvider";
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;

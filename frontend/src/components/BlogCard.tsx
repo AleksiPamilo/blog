@@ -1,7 +1,6 @@
 "use client";
 
-import { IPost } from "@/interfaces/post";
-import { IUser } from "@/interfaces/user";
+import { IPost, IUser } from "@/interfaces";
 import { formatDDMMYYYY } from "@/utils/formatTime";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
