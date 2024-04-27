@@ -13,7 +13,7 @@ import { common, createLowlight } from "lowlight";
 
 import "./tiptap.css";
 
-export default function Tiptap({ content, editable = true }: { content: string, editable?: boolean }) {
+export default function Tiptap({ content }: { content: string }) {
     const editor = useEditor({
         editorProps: {
             attributes: {
@@ -43,7 +43,7 @@ export default function Tiptap({ content, editable = true }: { content: string, 
     });
 
     editor?.setOptions({
-        editable: editable,
+        editable: false,
     });
 
     return (

@@ -26,9 +26,8 @@ export default function MobileNavigation() {
                     <SheetDescription>
                         <div className="flex flex-col h-full items-start justify-center gap-4">
                             {NavItems.map(({ name, path, icon }) => (
-                                <SheetClose asChild>
+                                <SheetClose asChild key={name}>
                                     <Link
-                                        key={name}
                                         href={path}
                                         className="w-full flex gap-2 items-center rounded-lg px-3 py-2 text-zinc-700 font-medium hover:bg-zinc-100 hover:text-zinc-900"
                                     >

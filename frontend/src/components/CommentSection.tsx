@@ -18,8 +18,8 @@ export default function CommentSection({ post }: { post: IPost }) {
     useEffect(() => {
         fetchComments().then(async (res) => {
             const data = await res.json();
-            setComments(data.data);
-            setTotalComments(parseInt(data.meta.pagination.total));
+            setComments(data?.data);
+            setTotalComments(parseInt(data?.meta?.pagination?.total));
         }).catch(() => setComments([]));
     }, []);
 
@@ -32,7 +32,7 @@ export default function CommentSection({ post }: { post: IPost }) {
         try {
             const response = await fetchComments();
             const data = await response.json();
-            setComments(prevComments => [...prevComments, ...data.data]);
+            setComments(prevComments => [...prevComments, ...data?.data]);
             setOffset(prevOffset => prevOffset + limit);
         } catch (error) {
             console.error('Error fetching more comments:', error);

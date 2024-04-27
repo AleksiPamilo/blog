@@ -70,7 +70,7 @@ export default function Post() {
                     </div>
                 </div>
                 <div className="mt-12">
-                    <Tiptap content={post.description} editable={false} />
+                    <Tiptap content={post.description} />
                 </div>
 
                 <CommentSection post={post} />
