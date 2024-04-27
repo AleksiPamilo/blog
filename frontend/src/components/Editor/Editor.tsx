@@ -119,6 +119,29 @@ function MenuBar() {
                 h6
             </Button>
             <Button
+                onClick={() => {
+                    const previousUrl = editor.getAttributes('link').href
+                    const url = window.prompt('URL', previousUrl)
+
+                    if (url === null) {
+                        return;
+                    }
+
+                    if (url === '') {
+                        editor.chain().focus().extendMarkRange('link').unsetLink()
+                            .run()
+
+                        return
+                    }
+
+                    editor.chain().focus().extendMarkRange('link').setLink({ href: url })
+                        .run()
+                }}
+                className={editor.isActive('link') ? isActive : ''}
+            >
+                link
+            </Button>
+            <Button
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 className={editor.isActive('bulletList') ? isActive : ''}
             >
@@ -213,7 +236,7 @@ export default function Editor({ content, placeholder }: { content?: string, pla
             limit: CHARACTER_LIMIT,
         }),
         Placeholder.configure({
-            placeholder: placeholder ?? "Write something ...",
+            placeholder: placeholder ?? "Write something...",
         }),
         OrderedList,
         BulletList
