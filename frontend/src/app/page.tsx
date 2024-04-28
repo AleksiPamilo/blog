@@ -1,6 +1,7 @@
 "use client";
 
 import BlogCard from "@/components/BlogCard";
+import Loading from "@/components/Loading";
 import { IPost } from "@/interfaces";
 import { useEffect, useState } from "react";
 
@@ -18,7 +19,8 @@ export default function Home() {
 
   return (
     <main className="flex flex-col w-full gap-2">
-      {posts &&
+      {posts
+        ?
         <>
           <h1 className="px-6 font-semibold">Popular posts:</h1>
           <div className="flex flex-wrap py-8 px-6 gap-6 w-full items-center justify-center">
@@ -29,6 +31,7 @@ export default function Home() {
             ))}
           </div>
         </>
+        : <Loading />
       }
     </main>
   );
