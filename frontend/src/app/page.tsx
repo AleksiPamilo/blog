@@ -1,7 +1,7 @@
 "use client";
 
 import BlogCard from "@/components/BlogCard";
-import Loading from "@/components/Loading";
+import BlogCardSkeleton from "@/components/BlogCardSkeleton";
 import { IPost } from "@/interfaces";
 import { useEffect, useState } from "react";
 
@@ -19,20 +19,17 @@ export default function Home() {
 
   return (
     <main className="flex flex-col w-full gap-2">
-      {posts
-        ?
-        <>
-          <h1 className="px-6 font-semibold">Popular posts:</h1>
-          <div className="flex flex-wrap py-8 px-6 gap-6 w-full items-center justify-center">
-            {posts.map((post) => (
-              <div key={post.id}>
-                <BlogCard post={post} />
-              </div>
-            ))}
+      <div className="flex flex-wrap py-8 px-6 gap-6 w-full items-center justify-center">
+        {posts && posts.length > 0 ? posts.map((post) => (
+          <div key={post.id}>
+            <BlogCard post={post} />
           </div>
-        </>
-        : <Loading />
-      }
+        ))
+          : Array(3).fill(null).map((_, index) => (
+            <BlogCardSkeleton key={index} />
+          ))
+        }
+      </div>
     </main>
   );
 }

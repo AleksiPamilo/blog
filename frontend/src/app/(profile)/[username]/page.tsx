@@ -1,32 +1,65 @@
 "use client";
 
+import ErrorDisplay from "@/components/ErrorDisplay";
 import Loading from "@/components/Loading";
+import NotFound from "@/components/NotFound";
 import ProfileBlogCard from "@/components/ProfileBlogCard";
 import { Button } from "@/components/ui/button";
 import { IUser } from "@/interfaces";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Profile() {
   const [user, setUser] = useState<IUser | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const pathname = usePathname();
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
+    setError(null);
+    setLoading(true);
     const slug = pathname.split("/")[1];
 
-    fetch(`${apiUrl}/api/users?slug=${slug}&populate=posts,posts.tags,posts.images`).then(async (data) => {
-      const json = await data.json();
-      const user = json?.data?.[0];
+    fetch(`${apiUrl}/api/users?slug=${slug}&populate=posts,posts.tags,posts.images`)
+      .then(async (data) => {
+        if (!data.ok) {
+          throw new Error("Failed to fetch data");
+        }
 
-      setUser(user);
-    }).catch(() => {
-      setUser(null);
-    });
+        const json = await data.json();
+        const userData = json?.data?.[0];
+        if (!userData) setError("Unexpected error occurred");
+        setUser(userData);
+      })
+      .catch(() => {
+        setUser(null);
+        setError("Failed to fetch data. Please try again later.");
+      })
+      .finally(() => setLoading(false));
   }, [pathname]);
 
-  if (!user) return <Loading />;
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleFetchData = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  if (error) {
+    return <ErrorDisplay error={error} onRetry={handleFetchData} />;
+  }
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (!user) {
+    return <NotFound />
+  }
+
   document.title = user.username + "'s Profile";
 
   const sortedPosts = user.posts.sort((a, b) => {
@@ -49,6 +82,7 @@ export default function Profile() {
           <ProfileBlogCard user={user} post={post} key={post.slug} />
         ))}
       </div>
+
     </div>
   );
 }

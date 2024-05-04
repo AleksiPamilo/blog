@@ -4,8 +4,8 @@ import { IPost, IUser } from "@/interfaces";
 import { formatDDMMYYYY } from "@/utils/formatTime";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import SkeletonCard from "./SkeletonCard";
 import Image from "next/image";
+import BlogCardSkeleton from "./BlogCardSkeleton";
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -20,7 +20,7 @@ export default function BlogCard({
   const user = author ?? post.author;
 
   if (!user) {
-    return <SkeletonCard />;
+    return <BlogCardSkeleton />;
   }
 
   const image = post.images?.[0];
