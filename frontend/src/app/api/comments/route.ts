@@ -8,7 +8,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         const paramsObject = Object.fromEntries(params);
         const { slug, start, limit } = paramsObject;
 
-        const apiUrl = `${strapiUrl}/api/comments?populate[0]=post&populate[1]=author&populate[2]=author.avatar&filters[post][slug]=${slug}${start && "&pagination[start]=" + start}${limit && "&pagination[limit]=" + limit}`;
+        const apiUrl = `${strapiUrl}/api/comments?populate[0]=post&populate[1]=author&populate[2]=author.avatar&filters[post][slug]=${slug}${start && "&pagination[start]=" + start}${limit && "&pagination[limit]=" + limit}&sort[0]=publishedAt:desc`;
 
         const fetchRes = await fetch(apiUrl, {
             headers: {

@@ -8,8 +8,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
         const paramsObject = Object.fromEntries(params);
         const { slug, start, limit } = paramsObject;
 
-        const apiUrl = `${strapiUrl}/api/profile-comments?populate[0]=post&populate[1]=author&populate[2]=author.avatar&populate[3]=commentedOn&filters[commentedOn][slug]=${slug}${start && "&pagination[start]=" + start}${limit && "&pagination[limit]=" + limit}`;
-
+        const apiUrl = `${strapiUrl}/api/profile-comments?populate[0]=post&populate[1]=author&populate[2]=author.avatar&populate[3]=commentedOn&filters[commentedOn][slug]=${slug}${start && "&pagination[start]=" + start}${limit && "&pagination[limit]=" + limit}&sort[0]=publishedAt:desc`;
+        console.log(apiUrl)
         const fetchRes = await fetch(apiUrl, {
             headers: {
                 Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
