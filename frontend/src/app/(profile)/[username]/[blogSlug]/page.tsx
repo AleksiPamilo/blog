@@ -5,7 +5,6 @@ import Tiptap from "@/components/Editor/Tiptap";
 import ErrorDisplay from "@/components/ErrorDisplay";
 import Loading from "@/components/Loading";
 import NotFound from "@/components/NotFound";
-import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { IPost } from "@/interfaces";
 import { formatTime, timeAgo } from "@/utils/formatTime";
@@ -29,12 +28,15 @@ export default function Post() {
         const blogSlug = pathname.split("/")[2];
 
         fetch(`${apiUrl}/api/posts?slug=${blogSlug}&populate=author,images,tags,author.avatar&sort=true`)
-            .then(async (data) => {
-                if (!data.ok) {
-                    setError("Failed to fetch data");
+            .then(res => {
+                if (!res.ok) {
+                    return setError("Failed to fetch data");
                 }
-                const json = await data.json();
-                const post = json?.data?.[0];
+
+                return res.json();
+            })
+            .then((data) => {
+                const post = data?.data?.[0];
                 if (!post) setError("Unexpected error occurred");
                 setPost(post);
             })

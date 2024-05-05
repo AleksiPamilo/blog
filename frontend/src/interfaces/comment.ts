@@ -10,3 +10,12 @@ export interface IComment {
     updatedAt: string;
     publishedAt: string;
 }
+
+export interface IProfileComment {
+    id: number;
+    author: IUser;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+}

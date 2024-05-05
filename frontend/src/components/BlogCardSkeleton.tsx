@@ -8,8 +8,8 @@ export default function BlogCardSkeleton() {
             </div>
             <div className="w-full h-max p-2">
                 <div className="flex gap-2">
-                    <Skeleton className="w-28 h-10 bg-zinc-200" />
-                    <Skeleton className="w-28 h-10 bg-zinc-200" />
+                    <Skeleton className="w-28 h-10 rounded-full bg-zinc-200" />
+                    <Skeleton className="w-28 h-10 rounded-full bg-zinc-200" />
                 </div>
 
                 <div className="text-left mt-4">

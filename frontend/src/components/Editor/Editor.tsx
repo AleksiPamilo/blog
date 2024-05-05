@@ -207,7 +207,6 @@ export default function Editor({ content, placeholder }: { content?: string, pla
                 slotBefore={<MenuBar />}
                 slotAfter={<BottomBar />}
                 extensions={getExtensions(CHARACTER_LIMIT, placeholder)}
-                onUpdate={e => console.log(e.editor.getHTML())}
                 content={content ?? ""}
             >
                 <></>

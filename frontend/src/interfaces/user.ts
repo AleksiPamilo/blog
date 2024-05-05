@@ -1,3 +1,4 @@
+import { IProfileComment } from "./comment";
 import { Format } from "./image";
 import { IPost } from "./post";
 
@@ -11,6 +12,7 @@ export interface IUser {
   createdAt: string;
   updatedAt: string;
   avatar: Avatar;
+  profile_comments: IProfileComment[];
 }
 
 type Avatar = {

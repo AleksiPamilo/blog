@@ -1,67 +1,58 @@
 "use client";
 
 import { SendHorizontal } from "lucide-react";
-import Input from "./Input";
-import Comment from "./Comment";
-import { IPost, IComment } from "@/interfaces";
+import Input from "../Input";
+import Comment from "../Comment";
+import { IComment, IUser } from "@/interfaces";
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "./ui/button";
-import Loading from "./Loading";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Button } from "../ui/button";
+import Loading from "../Loading";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import Pagination from "./Pagination";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export default function CommentSection({ post }: { post: IPost }) {
+export default function ProfileCommentSection({ user }: { user: IUser }) {
     const limit = 5;
     const [comments, setComments] = useState<IComment[]>([]);
     const [totalComments, setTotalComments] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
-    const [offset, setOffset] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
-    const fetchComments = useCallback(async () => {
-        const res = await fetch(`${apiUrl}/api/comments?slug=${post.slug}&limit=${limit}&start=${offset}`);
+    const fetchComments = useCallback(async (page: number) => {
+        const start = (page - 1) * limit;
+        const res = await fetch(`${apiUrl}/api/profile-comments?slug=${user.slug}&limit=${limit}&start=${start}`);
         return await res.json();
-    }, [post.slug, limit, offset]);
+    }, [user.slug, limit]);
 
-    useEffect(() => {
-        fetchComments()
+    const loadComments = useCallback((page: number) => {
+        setLoading(true);
+        fetchComments(page)
             .then(data => {
                 setComments(data?.data);
                 setTotalComments(parseInt(data?.meta?.pagination?.total));
-                setOffset(data?.data.length);
+                setCurrentPage(page);
             })
             .catch(() => {
                 setComments([]);
-                setOffset(0);
             })
             .finally(() => {
                 setLoading(false);
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const loadMoreComments = useCallback(() => {
-        setLoading(true);
-
-        fetchComments()
-            .then(data => {
-                setComments(prevComments => [...prevComments, ...data?.data]);
-                setOffset(prevOffset => prevOffset + limit);
-            })
-            .catch(() => {
-                setError("Failed to fetch more comments");
-            })
-            .finally(() => setLoading(false));
     }, [fetchComments]);
 
+    useEffect(() => {
+        loadComments(1);
+    }, [loadComments]);
+
     return (
-        <div className="flex flex-col w-full h-full gap-4 mt-12">
+        <div className="flex flex-col w-full h-full gap-4">
             <h1 className="text-2xl font-semibold">{totalComments} Comments</h1>
 
             <div>
                 <div className="relative">
-                    <Input placeholder="What do you think?" />
+                    <Input placeholder="Add a comment!" />
                     <Button variant="ghost" onClick={() => alert("TODO")} className="text-gray-600 p-0 mx-3 absolute right-0 top-1/2 transform -translate-y-1/2">
                         <SendHorizontal />
                     </Button>
@@ -86,8 +77,9 @@ export default function CommentSection({ post }: { post: IPost }) {
                     </TooltipContent>
                 </Tooltip>
             }
-            {totalComments > comments.length && !loading && (
-                <Button variant="outline" onClick={loadMoreComments}>Show More</Button>
+
+            {totalComments > limit && (
+                <Pagination totalComments={totalComments} currentPage={currentPage} onPageChange={loadComments} />
             )}
         </div>
     );

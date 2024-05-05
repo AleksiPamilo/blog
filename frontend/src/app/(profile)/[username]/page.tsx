@@ -3,7 +3,8 @@
 import ErrorDisplay from "@/components/ErrorDisplay";
 import Loading from "@/components/Loading";
 import NotFound from "@/components/NotFound";
-import ProfileBlogCard from "@/components/ProfileBlogCard";
+import ProfileBlogCard from "@/components/Profile/BlogCard";
+import ProfileCommentSection from "@/components/Profile/CommentSection";
 import { Button } from "@/components/ui/button";
 import { IUser } from "@/interfaces";
 import { usePathname } from "next/navigation";
@@ -22,7 +23,7 @@ export default function Profile() {
     setLoading(true);
     const slug = pathname.split("/")[1];
 
-    fetch(`${apiUrl}/api/users?slug=${slug}&populate=posts,posts.tags,posts.images`)
+    fetch(`${apiUrl}/api/users?slug=${slug}&populate=posts,posts.tags,posts.images,profile_comments,profile_comments.author,profile_comments.author.avatar`)
       .then(async (data) => {
         if (!data.ok) {
           throw new Error("Failed to fetch data");
@@ -81,8 +82,11 @@ export default function Profile() {
         {sortedPosts.map((post) => (
           <ProfileBlogCard user={user} post={post} key={post.slug} />
         ))}
-      </div>
 
+      </div>
+      <div className="w-4/5 border border-zinc-200 p-4 mb-8 rounded-md shadow-md">
+        <ProfileCommentSection user={user} />
+      </div>
     </div>
   );
 }

@@ -77,14 +77,21 @@
       "unique": true
     },
     "avatar": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "profile_comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::profile-comment.profile-comment",
+      "mappedBy": "author"
     }
   }
 }

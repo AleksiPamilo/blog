@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "profile_comments",
+  "info": {
+    "singularName": "profile-comment",
+    "pluralName": "profile-comments",
+    "displayName": "ProfileComment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "content": {
+      "type": "text"
+    },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "profile_comments"
+    },
+    "commentedOn": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}
