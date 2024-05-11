@@ -71,7 +71,7 @@ export default function BlogCard({
       <footer className="absolute bottom-1 left-0 w-full flex p-2 items-center justify-between">
         <span>{formatDDMMYYYY(post.publishedAt)}</span>
         <Link
-          href={`/@${user.username}`}
+          href={`/${user.slug}`}
           className="hover:underline"
         >
           {user.slug}

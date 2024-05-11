@@ -21,6 +21,7 @@
     },
     "email": {
       "type": "email",
+      "private": true,
       "minLength": 6,
       "configurable": false,
       "required": true
@@ -81,10 +82,7 @@
       "multiple": false,
       "required": false,
       "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
+        "images"
       ]
     },
     "profile_comments": {
@@ -92,6 +90,9 @@
       "relation": "oneToMany",
       "target": "api::profile-comment.profile-comment",
       "mappedBy": "author"
+    },
+    "emailConfirmed": {
+      "type": "boolean"
     }
   }
 }

@@ -3,6 +3,7 @@ import { Format } from "./image";
 import { IPost } from "./post";
 
 export interface IUser {
+  id: number;
   username: string;
   email: string;
   slug: string;

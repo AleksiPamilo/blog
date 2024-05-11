@@ -1,17 +1,17 @@
 import { IComment } from "@/interfaces";
 import { timeAgo } from "@/utils/formatTime";
 import Link from "next/link";
-import { useAuth } from "./context/AuthProvider";
 import Image from "next/image";
 import { IProfileComment } from "@/interfaces/comment";
+import { useSession } from "next-auth/react";
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 export default function Comment({ comment }: {
     comment: IComment | IProfileComment
 }) {
-    const { user } = useAuth();
-    const isRight = user?.username === comment.author.username;
+    const { data: session } = useSession();
+    const isRight = session?.user?.name === comment.author.username;
     const avatar = comment.author.avatar;
 
     const isProfileComment = () => {

@@ -4,8 +4,9 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider } from "@/components/context/AuthProvider";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import SessionProvider from "@/components/SessionProvider";
+import { getServerSession } from "next-auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,22 +15,24 @@ export const metadata: Metadata = {
   description: "Blog with NextJS and Strapi CMS",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession();
+
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>
+        <SessionProvider session={session}>
           <TooltipProvider>
             <Navigation />
             <Breadcrumbs />
             <Toaster />
             {children}
           </TooltipProvider>
-        </AuthProvider>
+        </SessionProvider>
       </body>
     </html >
   );

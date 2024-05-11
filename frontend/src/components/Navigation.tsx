@@ -4,11 +4,11 @@ import NavItems from "@/common/NavItems";
 import Link from "next/link";
 import Login from "./auth/Login";
 import MobileNavigation from "./MobileNavigation";
-import { useAuth } from "./context/AuthProvider";
-import { Button } from "./ui/button";
+import { useSession } from "next-auth/react";
+import AvatarDropdown from "./AvatarDropdown";
 
 export default function Navigation() {
-  const { user, logout } = useAuth();
+  const { data: session } = useSession();
 
   return (
     <>
@@ -27,7 +27,12 @@ export default function Navigation() {
             ))}
           </ul>
 
-          {!user ? <Login /> : <Button onClick={logout}>Log out</Button>}
+          {
+            !session?.user || !session?.user?.name
+              ? <Login />
+              : <AvatarDropdown image={session.user.image} user={session.user} />
+          }
+
         </div>
       </nav>
 

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import validateEmail from "@/utils/validateEmail";
 import { Errors } from "@/interfaces";
 import createSlug from "@/utils/createSlug";
-import { useAuth } from "../context/AuthProvider";
+import { signIn } from "next-auth/react";
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -19,7 +19,6 @@ export default function RegisterContent({
   const nameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const passwordConfirmRef = useRef<HTMLInputElement>(null);
-  const { login } = useAuth();
 
   const submit = () => {
     if (
@@ -59,12 +58,16 @@ export default function RegisterContent({
         slug: "@" + createSlug(nameRef.current?.value ?? "")
       }),
     })
-      .then(async (res) => {
-        const { jwt, user } = await res.json();
-        login(jwt, user);
-
-        toast.success("Register successful");
-        closeDialog();
+      .then((res) => {
+        if (res.status === 200) {
+          signIn("credentials", {
+            email: emailRef.current?.value,
+            password: passwordRef.current?.value,
+            redirect: false,
+          });
+          toast.success("Register successful");
+        }
+        // closeDialog();
       })
       .catch(() => {
         toast.error(Errors.Common.Unexpected);

@@ -4,9 +4,8 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { Errors } from "@/interfaces";
-import { useAuth } from "../context/AuthProvider";
-
-const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+import { signIn } from "next-auth/react";
+import validateEmail from "@/utils/validateEmail";
 
 export default function LoginContent({
   closeDialog,
@@ -15,39 +14,30 @@ export default function LoginContent({
 }) {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const { login } = useAuth();
 
   const submit = async () => {
     if (!emailRef.current?.value || !passwordRef.current?.value) {
-      toast.error(Errors.Common.EmptyFields);
-      return;
+      return toast.error(Errors.Common.EmptyFields);
     }
 
-    try {
-      const res = await fetch(`${strapiUrl}/api/auth/local`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          identifier: emailRef.current.value,
-          password: passwordRef.current.value,
-        }),
-      });
+    if (!(validateEmail(emailRef.current?.value))) {
+      return toast.error(Errors.Auth.EmailInvalid);
+    }
 
-      if (res.status !== 200) {
+    signIn("credentials", {
+      email: emailRef.current?.value,
+      password: passwordRef.current?.value,
+      redirect: false,
+    }).then((res) => {
+      if (res?.status !== 200) {
         return toast.error(Errors.Auth.IncorrectCredentials);
+      } else {
+        toast.success("Login Successful");
+        closeDialog();
       }
-
-      const { jwt, user } = await res.json();
-
-      login(jwt, user);
-
-      toast.success("Login Successful");
-      closeDialog();
-    } catch (e) {
+    }).catch(() => {
       toast.error(Errors.Common.Unexpected);
-    }
+    });
   };
 
   return (

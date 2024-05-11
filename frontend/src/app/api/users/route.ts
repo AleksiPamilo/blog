@@ -4,13 +4,18 @@ const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 export async function GET(req: NextRequest, res: NextResponse) {
     try {
+        const id = req.nextUrl.searchParams.get("id");
         const slug = req.nextUrl.searchParams.get("slug");
         const populate = req.nextUrl.searchParams.get("populate");
 
         let apiUrl = `${strapiUrl}/api/users`;
 
+        if (id) {
+            apiUrl += apiUrl.includes('?') ? `&filters[id]=${id}` : `?filters[id]=${id}`;
+        }
+
         if (slug) {
-            apiUrl += `?filters[slug]=${slug}`;
+            apiUrl += apiUrl.includes('?') ? `&filters[slug]=${slug}` : `?filters[slug]=${slug}`;
         }
 
         if (populate) {
