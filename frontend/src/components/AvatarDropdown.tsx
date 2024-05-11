@@ -59,14 +59,12 @@ export default function AvatarDropdown({ image, user }: { image?: string | null,
 
 function getFallback(username: string) {
     const parts = username.split(" ");
-
-    if (parts.length > 1) {
-        const firstLetter = parts[0][0].toUpperCase();
-        const secondLetter = parts[1][0].toUpperCase();
-        return firstLetter + secondLetter;
+    if (parts.length === 1) {
+        return parts[0].charAt(0).toUpperCase();
     } else {
-        const firstLetter = username.charAt(0).toUpperCase();
-        const secondLetter = username.length > 1 ? username.charAt(1).toLowerCase() : '';
-        return firstLetter + secondLetter;
+        return parts
+            .map((part) => part.charAt(0).toUpperCase())
+            .join("")
+            .slice(0, 2);
     }
 }
