@@ -4,7 +4,7 @@ import { SendHorizontal } from "lucide-react";
 import Input from "../Input";
 import Comment from "../Comment";
 import { IComment, IUser } from "@/interfaces";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import Loading from "../Loading";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -19,6 +19,7 @@ export default function ProfileCommentSection({ user }: { user: IUser }) {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const commentRef = useRef<HTMLInputElement>(null);
 
     const fetchComments = useCallback(async (page: number) => {
         const start = (page - 1) * limit;
@@ -46,14 +47,18 @@ export default function ProfileCommentSection({ user }: { user: IUser }) {
         loadComments(1);
     }, [loadComments]);
 
+    const submit = () => {
+        alert("TODO :)");
+    };
+
     return (
         <div className="flex flex-col w-full h-full gap-4">
             <h1 className="text-2xl font-semibold">{totalComments} Comments</h1>
 
             <div>
                 <div className="relative">
-                    <Input placeholder="Add a comment!" />
-                    <Button variant="ghost" onClick={() => alert("TODO")} className="text-gray-600 p-0 mx-3 absolute right-0 top-1/2 transform -translate-y-1/2">
+                    <Input placeholder="Add a comment!" ref={commentRef} onEnter={submit} />
+                    <Button variant="ghost" onClick={submit} className="text-gray-600 p-0 mx-3 absolute right-0 top-1/2 transform -translate-y-1/2">
                         <SendHorizontal />
                     </Button>
                 </div>

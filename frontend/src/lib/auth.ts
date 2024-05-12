@@ -1,13 +1,17 @@
-import type { NextAuthOptions, Session } from "next-auth";
+import type { NextAuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { IUser } from "@/interfaces";
 
-interface ExtendedSession extends Session {
+interface CustomSession extends Session {
+    id?: number;
     jwt?: string;
+    username?: string;
+    slug?: string;
 }
 
-interface ExtendedUser extends IUser {
+interface CustomUser extends User {
     jwt?: string;
+    username?: string;
+    slug?: string;
 }
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -52,12 +56,13 @@ export const authOptions: NextAuthOptions = {
                     const res = await fetch(apiUrl + `/api/users?id=${user.id}&populate=avatar`);
                     const userJson = await res.json();
                     const avatarUrl = userJson.data[0]?.avatar?.url;
+                    const slug = userJson.data[0]?.slug;
 
                     return {
                         id: user.id,
                         name: user.username,
                         image: avatarUrl ? String(strapiUrl + avatarUrl) : null,
-                        slug: userJson.slug,
+                        slug: slug,
                         jwt: jwt,
                     };
                 } catch {
@@ -68,16 +73,38 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async session({ session, token }) {
-            if (typeof token.jwt === "string") {
-                (session as ExtendedSession).jwt = token.jwt;
+            if (token) {
+                if (token.jwt) {
+                    (session as CustomSession).jwt = token.jwt as string;
+                }
+                if (token.name) {
+                    (session as CustomSession).user.name = token.name;
+                }
+                if (token.slug) {
+                    (session as CustomSession).user.slug = token.slug as string;
+                }
+                if (typeof token.id === "number") {
+                    (session as CustomSession).id = token.id;
+                }
             }
-            return session;
+
+            return Promise.resolve(session);
         },
         async jwt({ token, user }) {
-            if (user && typeof token.jwt === "string") {
-                (user as unknown as ExtendedUser).jwt = token.jwt;
+            if (typeof user?.id === "number") {
+                token.id = user.id;
             }
-            return token;
+            if (typeof (user as CustomUser)?.jwt === "string") {
+                token.jwt = (user as CustomUser).jwt;
+            }
+            if (typeof (user as CustomUser)?.username === "string") {
+                token.username = (user as CustomUser).username;
+            }
+            if (typeof (user as CustomUser)?.slug === "string") {
+                token.slug = (user as CustomUser).slug;
+            }
+
+            return Promise.resolve(token);
         },
     },
 };

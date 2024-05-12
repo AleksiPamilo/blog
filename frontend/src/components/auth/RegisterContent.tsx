@@ -67,7 +67,8 @@ export default function RegisterContent({
           });
           toast.success("Register successful");
         }
-        // closeDialog();
+
+        closeDialog();
       })
       .catch(() => {
         toast.error(Errors.Common.Unexpected);
