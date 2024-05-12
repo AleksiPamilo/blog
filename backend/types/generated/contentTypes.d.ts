@@ -456,7 +456,7 @@ export interface ApiProfileCommentProfileComment extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    content: Attribute.Text;
+    content: Attribute.Text & Attribute.Required;
     author: Attribute.Relation<
       'api::profile-comment.profile-comment',
       'manyToOne',
