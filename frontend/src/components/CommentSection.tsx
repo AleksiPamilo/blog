@@ -1,7 +1,7 @@
 "use client";
 
 import { SendHorizontal } from "lucide-react";
-import Input from "./Input";
+import { Input } from "./ui/input";
 import Comment from "./Comment";
 import { IPost, IComment } from "@/interfaces";
 import { useCallback, useEffect, useState } from "react";

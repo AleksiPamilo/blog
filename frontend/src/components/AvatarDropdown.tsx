@@ -1,9 +1,4 @@
-import {
-    Avatar,
-    AvatarImage,
-    AvatarFallback
-} from "@/components/ui/avatar";
-
+import Avatar from "./Avatar";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -21,15 +16,12 @@ import Link from "next/link";
 const style = "w-full cursor-pointer";
 
 export default function AvatarDropdown({ image, user }: { image?: string | null, user: DefaultSession["user"] }) {
-    const fallbackText = user && user.name ? getFallback(user.name) : "";
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Avatar className="hover:cursor-pointer hover:scale-105 hover:shadow-[0_0_5px_2px_#27272a]">
-                    <AvatarImage src={image ?? undefined} />
-                    <AvatarFallback>{fallbackText}</AvatarFallback>
-                </Avatar>
+                <div>
+                    <Avatar image={image} user={user} className="hover:cursor-pointer hover:scale-105 hover:shadow-[0_0_5px_2px_#27272a]" />
+                </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -55,16 +47,4 @@ export default function AvatarDropdown({ image, user }: { image?: string | null,
             </DropdownMenuContent>
         </DropdownMenu>
     )
-}
-
-function getFallback(username: string) {
-    const parts = username.split(" ");
-    if (parts.length === 1) {
-        return parts[0].charAt(0).toUpperCase();
-    } else {
-        return parts
-            .map((part) => part.charAt(0).toUpperCase())
-            .join("")
-            .slice(0, 2);
-    }
 }

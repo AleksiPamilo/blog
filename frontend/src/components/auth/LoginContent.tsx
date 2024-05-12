@@ -48,11 +48,7 @@ export default function LoginContent({
         ref={emailRef}
         placeholder="Email"
         className="p-2 rounded-md"
-        onKeyDown={(key) => {
-          if (key.code === "Enter") {
-            submit();
-          }
-        }}
+        onEnter={() => submit()}
       />
 
       <PasswordInput

@@ -84,11 +84,7 @@ export default function RegisterContent({
           ref={emailRef}
           placeholder="Email"
           className="p-2 rounded-md"
-          onKeyDown={(key) => {
-            if (key.code === "Enter") {
-              submit();
-            }
-          }}
+          onEnter={() => submit()}
         />
 
         <Input
@@ -97,11 +93,7 @@ export default function RegisterContent({
           ref={nameRef}
           placeholder="Username"
           className="p-2 rounded-md"
-          onKeyDown={(key) => {
-            if (key.code === "Enter") {
-              submit();
-            }
-          }}
+          onEnter={() => submit()}
         />
 
         <PasswordInput ref={passwordRef} onEnter={submit} />

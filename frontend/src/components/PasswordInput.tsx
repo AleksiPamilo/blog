@@ -17,11 +17,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(({ 
                 ref={ref}
                 type={showPassword ? "text" : "password"}
                 placeholder={label ?? "Password"}
-                onKeyDown={(key) => {
-                    if (key.code === "Enter" && onEnter) {
-                        onEnter();
-                    }
-                }}
+                onEnter={() => onEnter?.()}
             />
             <button
                 type="button"

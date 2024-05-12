@@ -1,5 +1,5 @@
 import Editor from "@/components/Editor/Editor";
-import Input from "@/components/Input";
+import { Input } from "@/components/ui/input";
 
 export default function CreatePost() {
     return (

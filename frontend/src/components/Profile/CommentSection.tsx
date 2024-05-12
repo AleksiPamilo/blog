@@ -1,14 +1,14 @@
 "use client";
 
 import { SendHorizontal } from "lucide-react";
-import Input from "../Input";
+import { Input } from "../ui/input";
 import Comment from "../Comment";
-import { IComment, IUser } from "@/interfaces";
+import { Errors, IComment, IUser } from "@/interfaces";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import Loading from "../Loading";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Pagination from "./Pagination";
+import { toast } from "sonner";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -17,7 +17,6 @@ export default function ProfileCommentSection({ user }: { user: IUser }) {
     const [comments, setComments] = useState<IComment[]>([]);
     const [totalComments, setTotalComments] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const commentRef = useRef<HTMLInputElement>(null);
 
@@ -31,7 +30,7 @@ export default function ProfileCommentSection({ user }: { user: IUser }) {
         setLoading(true);
         fetchComments(page)
             .then(data => {
-                setComments(data?.data);
+                setComments(data?.data ?? []);
                 setTotalComments(parseInt(data?.meta?.pagination?.total));
                 setCurrentPage(page);
             })
@@ -48,8 +47,47 @@ export default function ProfileCommentSection({ user }: { user: IUser }) {
     }, [loadComments]);
 
     const submit = () => {
-        alert("TODO :)");
-    };
+        if (!commentRef?.current?.value) {
+            return toast.error(Errors.Common.EmptyComment);
+        }
+
+        if (commentRef.current.value.length < 5) {
+            return toast.error(Errors.Common.ShortContent);
+        }
+
+        fetch(process.env.NEXT_PUBLIC_API_URL + "/api/profile-comments", {
+            method: "POST",
+            body: JSON.stringify({
+                content: String(commentRef.current.value),
+                commentedOn: user.id
+            })
+        }).then(async (res) => {
+            switch (res.status) {
+                case 200:
+                    const { comment } = await res.json();
+
+                    if (commentRef && commentRef.current) {
+                        commentRef.current.value = "";
+                    }
+
+                    setComments(prev => [comment, ...prev])
+                    toast.success("Comment sent successfully!");
+                    break;
+                case 401:
+                    toast.error(Errors.Auth.Unauthorized);
+                    break;
+                case 403:
+                    toast.error(Errors.Auth.VerifyEmail);
+                    break;
+                case 500:
+                    toast.error(Errors.Common.InternalServerError);
+                    break;
+                default:
+                    toast.error(Errors.Common.Unexpected);
+            }
+
+        });
+    }
 
     return (
         <div className="flex flex-col w-full h-full gap-4">
@@ -57,7 +95,7 @@ export default function ProfileCommentSection({ user }: { user: IUser }) {
 
             <div>
                 <div className="relative">
-                    <Input placeholder="Add a comment!" ref={commentRef} onEnter={submit} />
+                    <Input placeholder="Add a comment!" ref={commentRef} className="bg-zinc-100 p-4 h-max rounded-lg border border-zinc-200 focus:border-zinc-400" />
                     <Button variant="ghost" onClick={submit} className="text-gray-600 p-0 mx-3 absolute right-0 top-1/2 transform -translate-y-1/2">
                         <SendHorizontal />
                     </Button>
@@ -71,17 +109,6 @@ export default function ProfileCommentSection({ user }: { user: IUser }) {
             <div className="relative mt-4" hidden={!loading}>
                 <Loading />
             </div>
-
-            {error &&
-                <Tooltip delayDuration={0}>
-                    <TooltipTrigger asChild>
-                        <button onClick={() => setError(null)} className="w-full p-2 bg-red-300 border border-red-500 rounded-md shadow-md text-center">{error}</button>
-                    </TooltipTrigger>
-                    <TooltipContent className="px-4 py-2">
-                        Hide error
-                    </TooltipContent>
-                </Tooltip>
-            }
 
             {totalComments > limit && (
                 <Pagination totalComments={totalComments} currentPage={currentPage} onPageChange={loadComments} />

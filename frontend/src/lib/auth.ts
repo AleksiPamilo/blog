@@ -1,13 +1,6 @@
 import type { NextAuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-interface CustomSession extends Session {
-    id?: number;
-    jwt?: string;
-    username?: string;
-    slug?: string;
-}
-
 interface CustomUser extends User {
     jwt?: string;
     username?: string;
@@ -75,16 +68,16 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             if (token) {
                 if (token.jwt) {
-                    (session as CustomSession).jwt = token.jwt as string;
+                    session.jwt = token.jwt as string;
                 }
                 if (token.name) {
-                    (session as CustomSession).user.name = token.name;
+                    session.user.name = token.name;
                 }
                 if (token.slug) {
-                    (session as CustomSession).user.slug = token.slug as string;
+                    session.user.slug = token.slug as string;
                 }
                 if (typeof token.id === "number") {
-                    (session as CustomSession).id = token.id;
+                    session.id = token.id;
                 }
             }
 
