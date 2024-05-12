@@ -18,6 +18,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(({ 
                 type={showPassword ? "text" : "password"}
                 placeholder={label ?? "Password"}
                 onEnter={() => onEnter?.()}
+                className="px-3 py-2 h-10 rounded-md bg-background"
             />
             <button
                 type="button"

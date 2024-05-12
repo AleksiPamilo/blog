@@ -57,13 +57,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         if (response.status === 403) {
             return new NextResponse("Forbidden", { status: 403 })
-        }
-        const json = await response.json();
-        const comment = json.data;
+        } else if (response.status === 200) {
+            const json = await response.json();
+            const comment = json.data;
 
-        return new NextResponse(JSON.stringify({
-            comment: comment
-        }), { status: 200 })
+            return new NextResponse(JSON.stringify({
+                comment: comment
+            }), { status: 200 })
+        } else {
+            return new NextResponse("Unexpected error", { status: 500 })
+        }
     } catch {
         return new NextResponse("Internal Server Error", { status: 500 });
     }

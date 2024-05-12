@@ -11,7 +11,7 @@ export default function Home() {
   const [posts, setPosts] = useState<IPost[] | null>(null);
 
   useEffect(() => {
-    fetch(apiUrl + "/api/posts?populate=author,images,tags&limit=3&sort=true").then(async (data) => {
+    fetch(apiUrl + "/posts?populate=author,images,tags&limit=3&sort=true").then(async (data) => {
       const json = await data.json();
       setPosts(json.data);
     })

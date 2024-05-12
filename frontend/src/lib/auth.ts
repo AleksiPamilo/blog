@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
 
                     if (!user) return null;
 
-                    const res = await fetch(apiUrl + `/api/users?id=${user.id}&populate=avatar`);
+                    const res = await fetch(apiUrl + `/users?id=${user.id}&populate=avatar`);
                     const userJson = await res.json();
                     const avatarUrl = userJson.data[0]?.avatar?.url;
                     const slug = userJson.data[0]?.slug;

@@ -1,5 +1,5 @@
 import {
-    Pagination,
+    Pagination as ShadCnPagination,
     PaginationContent,
     PaginationItem,
     PaginationLink,
@@ -7,13 +7,13 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 
-interface ProfilePaginationProps {
+interface PaginationProps {
     totalComments: number;
     currentPage: number;
     onPageChange: (page: number) => void;
 }
 
-export default function ProfilePagination({ totalComments, currentPage, onPageChange }: ProfilePaginationProps) {
+export default function Pagination({ totalComments, currentPage, onPageChange }: PaginationProps) {
     const limit = 5;
     const totalPages = Math.ceil(totalComments / limit);
 
@@ -48,7 +48,7 @@ export default function ProfilePagination({ totalComments, currentPage, onPageCh
     };
 
     return (
-        <Pagination>
+        <ShadCnPagination>
             <PaginationContent className="hover:cursor-pointer">
                 <PaginationItem>
                     <PaginationPrevious onClick={handlePrevious} />
@@ -60,6 +60,6 @@ export default function ProfilePagination({ totalComments, currentPage, onPageCh
                     <PaginationNext onClick={handleNext} />
                 </PaginationItem>
             </PaginationContent>
-        </Pagination>
+        </ShadCnPagination>
     );
 }

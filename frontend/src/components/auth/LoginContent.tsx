@@ -47,7 +47,7 @@ export default function LoginContent({
         required
         ref={emailRef}
         placeholder="Email"
-        className="p-2 rounded-md"
+        className="px-3 py-2 h-10 rounded-md bg-background"
         onEnter={() => submit()}
       />
 

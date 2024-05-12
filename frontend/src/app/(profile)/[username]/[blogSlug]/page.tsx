@@ -27,7 +27,7 @@ export default function Post() {
         setLoading(true);
         const blogSlug = pathname.split("/")[2];
 
-        fetch(`${apiUrl}/api/posts?slug=${blogSlug}&populate=author,images,tags,author.avatar&sort=true`)
+        fetch(`${apiUrl}/posts?slug=${blogSlug}&populate=author,images,tags,author.avatar&sort=true`)
             .then(res => {
                 if (!res.ok) {
                     return setError("Failed to fetch data");
@@ -107,7 +107,7 @@ export default function Post() {
                     <Tiptap content={post.description} />
                 </div>
 
-                <CommentSection post={post} />
+                <CommentSection data={post} />
             </div>
         </div>
     );

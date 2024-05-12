@@ -83,7 +83,7 @@ export default function RegisterContent({
           required
           ref={emailRef}
           placeholder="Email"
-          className="p-2 rounded-md"
+          className="px-3 py-2 h-10 rounded-md bg-background"
           onEnter={() => submit()}
         />
 
@@ -92,7 +92,7 @@ export default function RegisterContent({
           required
           ref={nameRef}
           placeholder="Username"
-          className="p-2 rounded-md"
+          className="px-3 py-2 h-10 rounded-md bg-background"
           onEnter={() => submit()}
         />
 

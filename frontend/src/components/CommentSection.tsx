@@ -3,66 +3,106 @@
 import { SendHorizontal } from "lucide-react";
 import { Input } from "./ui/input";
 import Comment from "./Comment";
-import { IPost, IComment } from "@/interfaces";
-import { useCallback, useEffect, useState } from "react";
+import { IPost, IComment, IUser, Errors } from "@/interfaces";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import Loading from "./Loading";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import ProfilePagination from "./Pagination";
+import { toast } from "sonner";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export default function CommentSection({ post }: { post: IPost }) {
+export default function CommentSection({ data }: { data: IPost | IUser }) {
     const limit = 5;
     const [comments, setComments] = useState<IComment[]>([]);
     const [totalComments, setTotalComments] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
-    const [offset, setOffset] = useState<number>(0);
-    const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const commentRef = useRef<HTMLInputElement>(null);
 
-    const fetchComments = useCallback(async () => {
-        const res = await fetch(`${apiUrl}/api/comments?slug=${post.slug}&limit=${limit}&start=${offset}`);
+    const isUser = (data: IPost | IUser): data is IUser => {
+        return 'posts' in data;
+    };
+
+    const fetchComments = useCallback(async (page: number) => {
+        const start = (page - 1) * limit;
+        const endpoint = isUser(data) ? "profile-comments" : "comments";
+        const res = await fetch(`${apiUrl}/${endpoint}?slug=${data.slug}&limit=${limit}&start=${start}`);
         return await res.json();
-    }, [post.slug, limit, offset]);
+    }, [data.slug, limit]);
 
-    useEffect(() => {
-        fetchComments()
+    const loadComments = useCallback((page: number) => {
+        setLoading(true);
+        fetchComments(page)
             .then(data => {
-                setComments(data?.data);
+                setComments(data?.data ?? []);
                 setTotalComments(parseInt(data?.meta?.pagination?.total));
-                setOffset(data?.data.length);
+                setCurrentPage(page);
             })
             .catch(() => {
                 setComments([]);
-                setOffset(0);
             })
             .finally(() => {
                 setLoading(false);
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const loadMoreComments = useCallback(() => {
-        setLoading(true);
-
-        fetchComments()
-            .then(data => {
-                setComments(prevComments => [...prevComments, ...data?.data]);
-                setOffset(prevOffset => prevOffset + limit);
-            })
-            .catch(() => {
-                setError("Failed to fetch more comments");
-            })
-            .finally(() => setLoading(false));
     }, [fetchComments]);
 
+    useEffect(() => {
+        loadComments(1);
+    }, [loadComments]);
+
+    const submit = () => {
+        if (!commentRef?.current?.value) {
+            return toast.error(Errors.Common.EmptyComment);
+        }
+
+        if (commentRef.current.value.length < 5) {
+            return toast.error(Errors.Common.ShortContent);
+        }
+
+        const endpoint = isUser(data) ? "profile-comments" : "comments";
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/${endpoint}`, {
+            method: "POST",
+            body: JSON.stringify({
+                content: String(commentRef.current.value),
+                ...(isUser(data) ? { commentedOn: data.id } : { post: data.id })
+            })
+        }).then(async (res) => {
+            switch (res.status) {
+                case 200:
+                    const { comment } = await res.json();
+
+                    if (commentRef && commentRef.current) {
+                        commentRef.current.value = "";
+                    }
+
+                    setComments(prev => [comment, ...prev]);
+                    setTotalComments(prev => prev + 1);
+                    toast.success("Comment sent successfully!");
+                    break;
+                case 401:
+                    toast.error(Errors.Auth.Unauthorized);
+                    break;
+                case 403:
+                    toast.error(Errors.Auth.VerifyEmail);
+                    break;
+                case 500:
+                    toast.error(Errors.Common.InternalServerError);
+                    break;
+                default:
+                    toast.error(Errors.Common.Unexpected);
+            }
+        });
+    }
+
     return (
-        <div className="flex flex-col w-full h-full gap-4 mt-12">
+        <div className="flex flex-col w-full h-full gap-4">
             <h1 className="text-2xl font-semibold">{totalComments} Comments</h1>
 
             <div>
                 <div className="relative">
-                    <Input placeholder="What do you think?" />
-                    <Button variant="ghost" onClick={() => alert("TODO")} className="text-gray-600 p-0 mx-3 absolute right-0 top-1/2 transform -translate-y-1/2">
+                    <Input placeholder={isUser(data) ? "Add a comment!" : "What do you think?"} onEnter={submit} ref={commentRef} className="bg-zinc-100 p-4 h-max rounded-lg border border-zinc-200 focus:border-zinc-400" />
+                    <Button variant="ghost" onClick={submit} className="text-gray-600 p-0 mx-3 absolute right-0 top-1/2 transform -translate-y-1/2">
                         <SendHorizontal />
                     </Button>
                 </div>
@@ -76,18 +116,8 @@ export default function CommentSection({ post }: { post: IPost }) {
                 <Loading />
             </div>
 
-            {error &&
-                <Tooltip delayDuration={0}>
-                    <TooltipTrigger asChild>
-                        <button onClick={() => setError(null)} className="w-full p-2 bg-red-300 border border-red-500 rounded-md shadow-md text-center">{error}</button>
-                    </TooltipTrigger>
-                    <TooltipContent className="px-4 py-2">
-                        Hide error
-                    </TooltipContent>
-                </Tooltip>
-            }
-            {totalComments > comments.length && !loading && (
-                <Button variant="outline" onClick={loadMoreComments}>Show More</Button>
+            {totalComments > limit && (
+                <ProfilePagination totalComments={totalComments} currentPage={currentPage} onPageChange={loadComments} />
             )}
         </div>
     );

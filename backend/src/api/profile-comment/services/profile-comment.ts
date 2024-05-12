@@ -23,7 +23,7 @@ export default factories.createCoreService('api::profile-comment.profile-comment
                 createdAt: timestamp,
                 publishedAt: timestamp,
             },
-            populate: ['author', 'author.avatar', 'commentedOn']
+            populate: ['author', 'author.avatar']
         });
 
         return newComment;
