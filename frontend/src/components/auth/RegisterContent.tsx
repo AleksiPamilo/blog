@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import PasswordInput from "../PasswordInput";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -7,6 +7,7 @@ import validateEmail from "@/utils/validateEmail";
 import { Errors } from "@/interfaces";
 import createSlug from "@/utils/createSlug";
 import { signIn } from "next-auth/react";
+import { LoaderCircle } from "lucide-react";
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -19,8 +20,11 @@ export default function RegisterContent({
   const nameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const passwordConfirmRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const submit = () => {
+    setLoading(true);
+
     if (
       !emailRef.current?.value ||
       !emailRef.current?.value ||
@@ -28,21 +32,25 @@ export default function RegisterContent({
       !passwordConfirmRef.current?.value
     ) {
       toast.error(Errors.Auth.EmptyFields);
+      setLoading(false);
       return;
     }
 
     if (!validateEmail(emailRef.current?.value)) {
       toast.error(Errors.Auth.EmailInvalid);
+      setLoading(false);
       return;
     }
 
     if (passwordRef.current?.value !== passwordConfirmRef.current?.value) {
       toast.error(Errors.Auth.PasswordsDontMatch);
+      setLoading(false);
       return;
     }
 
     if (passwordRef.current?.value && passwordRef.current.value.length < 6) {
       toast.error(Errors.Auth.PasswordLength);
+      setLoading(false);
       return;
     }
 
@@ -103,8 +111,14 @@ export default function RegisterContent({
           label="Confirm Password"
         />
       </div>
-      <Button className="mt-4 w-full" onClick={submit}>
-        Register
+
+      <Button className="mt-4 w-full" onClick={submit} disabled={loading} >
+        {loading ? <>
+          <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+          Please wait
+        </>
+          : <p>Sign In</p>
+        }
       </Button>
     </div>
   );

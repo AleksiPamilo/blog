@@ -1,12 +1,13 @@
-export default function createSlug(inputString: string, randomize: boolean = false) {
-    const randomString = randomize ? '-' + Math.random().toString(36).substring(2, 7) : '';
+export default function createSlug(inputString: string, addUniqueSuffix: boolean = false) {
+    const uniqueSuffix = addUniqueSuffix ? '-' + Math.floor(Math.random() * 100000).toString() : '';
 
     const slug = inputString
         .toLowerCase()
         .replace(/\s+/g, '-')
         .replace(/[^a-z0-9-]/g, '')
-        .replace(/-{2,}/g, '-');
-    return `${slug}${randomString}`;
+        .replace(/-{2,}/g, '-')
+        .replace(/^-+|-+$/g, '');
+    return `${slug}${uniqueSuffix}`;
 }
 
 export function parsePostTitleFromSlug(slug: string) {

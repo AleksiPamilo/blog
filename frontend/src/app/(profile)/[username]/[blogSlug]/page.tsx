@@ -103,7 +103,7 @@ export default function Post() {
                         <Link href={`/${author.slug}`} className="hover:underline">{author.username}</Link>
                     </div>
                 </div>
-                <div className="mt-12">
+                <div className="my-12">
                     <Tiptap content={post.description} />
                 </div>
 

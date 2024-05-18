@@ -1,4 +1,8 @@
+import { authOptions } from "@/lib/auth";
+import createSlug from "@/utils/createSlug";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import sanitize from "sanitize-html";
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -40,5 +44,58 @@ export async function GET(req: NextRequest, res: NextResponse) {
         }), { status: 200 })
     } catch (err) {
         return new NextResponse("Internal server error", { status: 500 })
+    }
+}
+
+export async function POST(req: NextRequest, res: NextResponse) {
+    try {
+        const session = await getServerSession(authOptions);
+        const apiUrl = `${strapiUrl}/api/posts`;
+        const { title, description, tags, draft } = await req.json();
+
+        const sanitizedDescription = sanitize(description, {
+            allowedTags: sanitize.defaults.allowedTags.concat(["pre", "code"]),
+            allowedAttributes: {
+                code: ["class"]
+            },
+            allowedClasses: {
+                code: [/^language-\w+/]
+            }
+        });
+
+        if (!session?.user) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (!title || !description) {
+            return new NextResponse("Bad Request", { status: 400 })
+        }
+
+        const timestamp = new Date().toISOString();
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + session.jwt
+            },
+            body: JSON.stringify({
+                author: session.id,
+                description: sanitizedDescription,
+                title: title,
+                slug: createSlug(title, true),
+                createdAt: timestamp,
+                publishedAt: draft === true ? null : timestamp,
+            })
+        });
+
+        if (response.status === 403) {
+            return new NextResponse("Forbidden", { status: 403 })
+        } else if (response.status === 200) {
+            return new NextResponse("Success", { status: 200 })
+        } else {
+            return new NextResponse("Unexpected error", { status: 500 })
+        }
+    } catch {
+        return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

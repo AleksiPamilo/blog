@@ -3,8 +3,8 @@
 import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import { Button } from "../ui/button";
 import getExtensions from "./Extensions";
-
 import "./tiptap.css";
+import { SubmitOptions } from "@/app/create-post/page";
 
 const CHARACTER_LIMIT = 10000;
 
@@ -187,7 +187,7 @@ function MenuBar() {
     )
 }
 
-function BottomBar() {
+function BottomBar({ submit }: { submit: (options: Partial<SubmitOptions>) => void }) {
     const { editor } = useCurrentEditor();
 
     if (!editor) return null;
@@ -195,17 +195,18 @@ function BottomBar() {
     return (
         <div className="w-full flex items-center justify-between text-gray-500">
             <span>{editor.storage.characterCount.characters()}/{CHARACTER_LIMIT} characters</span>
-            <Button onClick={() => alert("TODO")}>Publish</Button>
+            <Button onClick={() => submit({ html: editor.getHTML(), text: editor.getText(), draft: true })}>Save as draft</Button>
+            <Button onClick={() => submit({ html: editor.getHTML(), text: editor.getText() })}>Publish</Button>
         </div>
     );
 }
 
-export default function Editor({ content, placeholder }: { content?: string, placeholder?: string }) {
+export default function Editor({ content, placeholder, submit }: { content?: string, placeholder?: string, submit: (options: Partial<SubmitOptions>) => void }) {
     return (
         <div className="bg-zinc-100 border border-zinc-200 shadow-md p-4 rounded-md focus:outline-none focus-within:border-zinc-300">
             <EditorProvider
                 slotBefore={<MenuBar />}
-                slotAfter={<BottomBar />}
+                slotAfter={<BottomBar submit={submit} />}
                 extensions={getExtensions(CHARACTER_LIMIT, placeholder)}
                 content={content ?? ""}
             >
