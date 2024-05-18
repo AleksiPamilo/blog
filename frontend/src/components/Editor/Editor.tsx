@@ -195,8 +195,10 @@ function BottomBar({ submit }: { submit: (options: Partial<SubmitOptions>) => vo
     return (
         <div className="w-full flex items-center justify-between text-gray-500">
             <span>{editor.storage.characterCount.characters()}/{CHARACTER_LIMIT} characters</span>
-            <Button onClick={() => submit({ html: editor.getHTML(), text: editor.getText(), draft: true })}>Save as draft</Button>
-            <Button onClick={() => submit({ html: editor.getHTML(), text: editor.getText() })}>Publish</Button>
+            <div className="space-x-2">
+                <Button onClick={() => submit({ html: editor.getHTML(), text: editor.getText(), draft: true })}>Save as draft</Button>
+                <Button onClick={() => submit({ html: editor.getHTML(), text: editor.getText() })}>Publish</Button>
+            </div>
         </div>
     );
 }
