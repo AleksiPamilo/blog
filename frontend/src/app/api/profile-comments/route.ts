@@ -38,8 +38,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!commentedOn || isNaN(commentedOn)) {
-            return new NextResponse("Bad Request", { status: 400 })
+        if (!commentedOn || isNaN(parseInt(commentedOn))) {
+            return new NextResponse("Bad Request", { status: 400 });
         }
 
         const response = await fetch(apiUrl, {
@@ -49,9 +49,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 "Authorization": "Bearer " + session.jwt
             },
             body: JSON.stringify({
-                author: session.id,
+                author: session.user.id,
                 content: String(content),
-                commentedOn: commentedOn,
+                commentedOn: parseInt(commentedOn),
             })
         });
 

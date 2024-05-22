@@ -77,7 +77,7 @@ export const authOptions: NextAuthOptions = {
                     session.user.slug = token.slug as string;
                 }
                 if (typeof token.id === "number") {
-                    session.id = token.id;
+                    session.user.id = token.id;
                 }
             }
 

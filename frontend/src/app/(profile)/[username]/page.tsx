@@ -18,6 +18,10 @@ export default function Profile() {
   const [loading, setLoading] = useState<boolean>(true);
   const pathname = usePathname();
 
+  if (!(pathname.split("/")[1].startsWith("@"))) {
+    return <NotFound />
+  };
+
   const fetchData = useCallback(() => {
     setError(null);
     setLoading(true);

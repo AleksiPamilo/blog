@@ -1,7 +1,7 @@
 "use client";
 
 import { IPost, IUser } from "@/interfaces";
-import { formatDDMMYYYY } from "@/utils/formatTime";
+import { formatDDMMYYYY, formatTime } from "@/utils/formatTime";
 import Link from "next/link";
 import Image from "next/image";
 import BlogCardSkeleton from "./BlogCardSkeleton";
@@ -11,9 +11,11 @@ const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 export default function BlogCard({
   post,
   author,
+  draft
 }: {
   post: IPost;
   author?: IUser;
+  draft?: boolean;
 }) {
   const user = author ?? post.author;
 
@@ -27,7 +29,7 @@ export default function BlogCard({
   return (
     <div className="relative hover:scale-105 transition-all ease-in-out duration-500">
       <Link
-        href={`/${user.slug}/${post.slug}`}
+        href={`/${user.slug}${draft && "/draft"}/${post.slug}`}
         className="flex flex-col w-[23rem] h-[25rem] rounded-md shadow-md"
       >
         <div className="w-full relative h-1/2 border-b">
@@ -69,13 +71,15 @@ export default function BlogCard({
         </div>
       </Link>
       <footer className="absolute bottom-1 left-0 w-full flex p-2 items-center justify-between">
-        <span>{formatDDMMYYYY(post.publishedAt)}</span>
-        <Link
+        <span>{draft ? formatTime(post.createdAt) : formatDDMMYYYY(post.publishedAt)}</span>
+        {draft ? <span className="py-2 px-4 rounded-full text-gray-700 bg-blue-300">
+          Draft
+        </span> : <Link
           href={`/${user.slug}`}
           className="hover:underline"
         >
           {user.slug}
-        </Link>
+        </Link>}
       </footer>
     </div>
   );

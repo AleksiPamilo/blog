@@ -33,6 +33,11 @@ export default function AvatarDropdown({ image, user }: { image?: string | null,
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
+                        <Link href={"/@" + createSlug(user?.name!) + "/drafts"} className={style}>
+                            My Drafts
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                         <button className={style} onClick={() => alert("TODO : )\nThe other options work though!")}>
                             Settings
                         </button>

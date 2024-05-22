@@ -71,7 +71,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
             return new NextResponse("Bad Request", { status: 400 })
         }
 
-        const timestamp = new Date().toISOString();
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
@@ -79,12 +78,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 "Authorization": "Bearer " + session.jwt
             },
             body: JSON.stringify({
-                author: session.id,
+                author: session.user.id,
                 description: sanitizedDescription,
                 title: title,
                 slug: createSlug(title, true),
-                createdAt: timestamp,
-                publishedAt: draft === true ? null : timestamp,
+                publishedAt: draft === true ? null : new Date().toISOString()
             })
         });
 
@@ -93,9 +91,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
         } else if (response.status === 200) {
             return new NextResponse("Success", { status: 200 })
         } else {
+            console.log(response.statusText)
             return new NextResponse("Unexpected error", { status: 500 })
         }
-    } catch {
+    } catch (e) {
+        console.error(e)
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

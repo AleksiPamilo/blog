@@ -49,7 +49,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 "Authorization": "Bearer " + session.jwt
             },
             body: JSON.stringify({
-                author: session.id,
+                author: session.user.id,
                 content: String(content),
                 post: post,
             })
