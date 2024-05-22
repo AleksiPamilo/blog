@@ -29,7 +29,7 @@ export default function BlogCard({
   return (
     <div className="relative hover:scale-105 transition-all ease-in-out duration-500">
       <Link
-        href={`/${user.slug}${draft && "/draft"}/${post.slug}`}
+        href={`/${user.slug}${draft ? "/drafts" : ""}/${post.slug}`}
         className="flex flex-col w-[23rem] h-[25rem] rounded-md shadow-md"
       >
         <div className="w-full relative h-1/2 border-b">

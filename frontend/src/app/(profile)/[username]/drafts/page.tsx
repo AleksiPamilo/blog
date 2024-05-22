@@ -3,6 +3,7 @@
 import BlogCard from "@/components/BlogCard";
 import Loading from "@/components/Loading";
 import Radio from "@/components/Radio";
+import UnAuthenticated from "@/components/UnAuthenticated";
 import { IPost, IUser } from "@/interfaces";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -20,23 +21,23 @@ export default function Drafts() {
             .then(async (res) => {
                 const json = await res.json();
                 setUser(json.user);
-                setDrafts(json.drafts);
+                sortDrafts("newest", json.drafts);
             }).catch(e => console.error(e))
             .finally(() => setLoading(false));
     }, []);
 
-    const sortDrafts = (sort: string) => {
-        let sortedDrafts: IPost[] = [];
+    const sortDrafts = (sort?: string, data: IPost[] = drafts) => {
+        let sortedDrafts: IPost[] = [...data];
 
         switch (sort) {
             case "newest":
-                sortedDrafts = drafts.slice().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                sortedDrafts = sortedDrafts.slice().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 break;
             case "oldest":
-                sortedDrafts = drafts.slice().sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+                sortedDrafts = sortedDrafts.slice().sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
                 break;
             default:
-                sortedDrafts = drafts.slice().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                sortedDrafts = sortedDrafts.slice().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 break;
         }
 
@@ -44,7 +45,7 @@ export default function Drafts() {
     }
 
     return (
-        !session?.user ? <></> :
+        !session?.user ? <UnAuthenticated /> :
             loading ? <Loading /> : (
                 <div className="flex flex-col w-full gap-2 py-10">
                     <div className="flex flex-wrap py-8 px-6 gap-6 w-full items-center justify-center">
@@ -61,7 +62,7 @@ export default function Drafts() {
                             <div className="flex flex-wrap gap-3 items-center justify-center">
                                 {
                                     drafts.map((draft) => (
-                                        <BlogCard post={draft} author={user} draft />
+                                        <BlogCard post={draft} author={user} draft key={draft.slug} />
                                     ))
                                 }
                             </div>

@@ -16,13 +16,14 @@ export default function Navigation() {
         <div className="font-semibold text-2xl">LOGO</div>
         <div className="flex gap-4">
           <ul className="flex items-start justify-center gap-4">
-            {NavItems.map(({ name, path }) => (
+            {NavItems.map(({ name, path, icon }) => (
               <Link
                 key={name}
                 href={path}
-                className="rounded-lg px-3 py-2 text-zinc-700 font-medium hover:bg-zinc-100 hover:text-zinc-900"
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-zinc-700 font-medium hover:bg-zinc-100 hover:text-zinc-900"
               >
-                {name}
+                <p className="w-6 h-6">{icon}</p>
+                <p>{name}</p>
               </Link>
             ))}
           </ul>

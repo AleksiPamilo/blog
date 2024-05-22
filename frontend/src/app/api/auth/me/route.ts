@@ -8,10 +8,31 @@ const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
 export async function GET(req: NextRequest, res: NextResponse) {
     try {
         const session = await getServerSession(authOptions);
-        const apiUrl = `${strapiUrl}/api/users/me?populate[0]=posts&populate[1]=posts.tags`;
+        const blogSlug = req.nextUrl.searchParams.get("blogSlug");
+        const apiUrl = `${strapiUrl}/api/users/me?populate[0]=posts&populate[1]=posts.images&populate[2]=posts.tags&populate[3]=avatar`;
 
         if (!session?.user) {
             return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (!!blogSlug) {
+            const fetchRes = await fetch(apiUrl, {
+                headers: {
+                    Authorization: `Bearer ${session.jwt}`,
+                },
+            });
+
+            const data = await fetchRes.json();
+            const draft = data?.posts?.find((post: IPost) => post.slug === blogSlug);
+
+            if (draft) {
+                return new NextResponse(JSON.stringify({
+                    user: data,
+                    draft: draft,
+                }), { status: 200 });
+            } else {
+                return new NextResponse("Data Not Found", { status: fetchRes.status });
+            }
         }
 
         const fetchRes = await fetch(apiUrl, {

@@ -1,4 +1,4 @@
-import { HomeIcon, StarIcon, BellIcon } from "lucide-react";
+import { HomeIcon, StarIcon, BellIcon, PenLine } from "lucide-react";
 
 type NavItemType = {
     name: string,
@@ -23,6 +23,11 @@ const NavItems: NavItemType[] = [
         name: "Newest",
         path: "/newest",
         icon: <BellIcon className={iconStyle} />
+    },
+    {
+        name: "Create Post",
+        path: "/create-post",
+        icon: <PenLine className={iconStyle} />
     }
 ];
 

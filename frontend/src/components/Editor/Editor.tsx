@@ -192,12 +192,18 @@ function BottomBar({ submit }: { submit: (options: Partial<SubmitOptions>) => vo
 
     if (!editor) return null;
 
+    const handleSubmit = (draft: boolean) => {
+        submit({ html: editor.getHTML(), text: editor.getText(), draft: draft });
+
+        editor.commands.clearContent();
+    }
+
     return (
         <div className="w-full flex items-center justify-between text-gray-500">
             <span>{editor.storage.characterCount.characters()}/{CHARACTER_LIMIT} characters</span>
             <div className="space-x-2">
-                <Button onClick={() => submit({ html: editor.getHTML(), text: editor.getText(), draft: true })}>Save as draft</Button>
-                <Button onClick={() => submit({ html: editor.getHTML(), text: editor.getText() })}>Publish</Button>
+                <Button onClick={() => handleSubmit(true)}>Save as draft</Button>
+                <Button onClick={() => handleSubmit(false)}>Publish</Button>
             </div>
         </div>
     );
