@@ -930,6 +930,16 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'api::profile-comment.profile-comment'
     >;
     emailConfirmed: Attribute.Boolean;
+    followers: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    followings: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

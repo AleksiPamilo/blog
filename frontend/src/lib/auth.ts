@@ -45,12 +45,11 @@ export const authOptions: NextAuthOptions = {
                     const { user, jwt } = json;
 
                     if (!user) return null;
-
                     const res = await fetch(apiUrl + `/users?id=${user.id}&populate=avatar`);
                     const userJson = await res.json();
                     const avatarUrl = userJson.data[0]?.avatar?.url;
                     const slug = userJson.data[0]?.slug;
-
+                    
                     return {
                         id: user.id,
                         name: user.username,

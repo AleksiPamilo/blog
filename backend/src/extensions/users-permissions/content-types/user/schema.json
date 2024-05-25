@@ -81,9 +81,7 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "profile_comments": {
       "type": "relation",
@@ -93,6 +91,18 @@
     },
     "emailConfirmed": {
       "type": "boolean"
+    },
+    "followers": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "via": "followings"
+    },
+    "followings": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "via": "followers"
     }
   }
 }
