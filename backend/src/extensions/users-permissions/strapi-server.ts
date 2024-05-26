@@ -1,6 +1,7 @@
 export default (plugin) => {
   plugin.controllers.user.followUser = async (ctx) => {
-    const { followerId, followeeId } = ctx.request.body;
+    const { followeeId } = ctx.request.body;
+    const followerId = ctx.state.user.id;
 
     if (!followerId || !followeeId) {
       return ctx.throw(400, "Bad Request");
@@ -68,7 +69,8 @@ export default (plugin) => {
   };
 
   plugin.controllers.user.unfollowUser = async (ctx) => {
-    const { followerId, followeeId } = ctx.request.body;
+    const { followeeId } = ctx.request.body;
+    const followerId = ctx.state.user.id;
 
     if (!followerId || !followeeId) {
       return ctx.throw(400, "Bad Request");
