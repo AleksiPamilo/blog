@@ -1,5 +1,6 @@
 export default async (ctx) => {
-  const { followerId, followeeId } = ctx.request.body;
+  const { followeeId } = ctx.request.body;
+  const followerId = ctx.state.user.id;
 
   if (followerId === followeeId) {
     return false;

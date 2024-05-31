@@ -127,6 +127,36 @@ export default (plugin) => {
     }
   };
 
+  plugin.controllers.user.checkFollowStatus = async (ctx) => {
+    const { followeeId } = ctx.params;
+    const followerId = ctx.state.user.id;
+
+    if (!followerId || !followeeId) {
+      return ctx.throw(400, "Bad Request");
+    }
+
+    try {
+      const follower = await strapi
+        .query("plugin::users-permissions.user")
+        .findOne({
+          where: { id: followerId },
+          populate: ["followings"],
+        });
+
+      if (!follower) {
+        return ctx.throw(404, "User not found");
+      }
+
+      const isFollowing = follower.followings.some(
+        (user) => user.id === parseInt(followeeId)
+      );
+
+      ctx.send({ isFollowing });
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  };
+
   plugin.routes["content-api"].routes.push(
     {
       method: "POST",
@@ -143,6 +173,17 @@ export default (plugin) => {
       config: {
         policies: ["global::preventSelfFollow"],
       },
+    },
+    {
+      method: "GET",
+      path: "/follow-status/:followeeId",
+      handler: "user.checkFollowStatus",
+      config: {
+        policies: [],
+      },
+      // config: {
+      //   policies: ["global::preventSelfFollow"],
+      // },
     }
   );
 
