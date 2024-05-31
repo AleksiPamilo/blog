@@ -181,9 +181,6 @@ export default (plugin) => {
       config: {
         policies: [],
       },
-      // config: {
-      //   policies: ["global::preventSelfFollow"],
-      // },
     }
   );
 

@@ -6,16 +6,21 @@ import Loading from "@/components/Loading";
 import NotFound from "@/components/NotFound";
 import ProfileBlogCard from "@/components/Profile/BlogCard";
 import { Button } from "@/components/ui/button";
-import { IPost, IUser } from "@/interfaces";
+import { Errors, IPost, IUser } from "@/interfaces";
+import { LoaderCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Profile() {
   const [user, setUser] = useState<IUser | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<{ page: boolean; button: boolean }>({
+    page: true,
+    button: false,
+  });
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const pathname = usePathname();
 
@@ -23,7 +28,7 @@ export default function Profile() {
     if (!pathname.split("/")[1].startsWith("@")) return;
 
     setError(null);
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, page: true }));
     const slug = pathname.split("/")[1];
 
     fetch(
@@ -52,7 +57,9 @@ export default function Profile() {
           setUser(updatedUserData);
 
           try {
-            const res = await fetch("/api/users/follow-status?id=" + updatedUserData.id);
+            const res = await fetch(
+              "/api/users/follow-status?id=" + updatedUserData.id
+            );
             const json = await res.json();
             setIsFollowing(json.isFollowing);
           } catch {
@@ -64,7 +71,7 @@ export default function Profile() {
         setUser(null);
         setError("Failed to fetch data. Please try again later.");
       })
-      .finally(() => setLoading(false));
+      .finally(() => setLoading((prev) => ({ ...prev, page: false })));
   }, [pathname]);
 
   useEffect(() => {
@@ -83,7 +90,7 @@ export default function Profile() {
     return <ErrorDisplay error={error} onRetry={handleFetchData} />;
   }
 
-  if (loading) {
+  if (loading.page) {
     return <Loading />;
   }
 
@@ -115,18 +122,38 @@ export default function Profile() {
         </div>
         <div>
           <Button
+            disabled={loading.button}
             onClick={() => {
-              fetch("/api/users/" + isFollowing ? "follow": "unfollow", {
+              setLoading((prev) => ({ ...prev, button: true }));
+              fetch(`/api/users/${isFollowing ? "unfollow" : "follow"}`, {
                 method: "POST",
                 body: JSON.stringify({
                   id: user.id,
                 }),
-              }).then((res) => {
-                console.log(res.status);
-              });
+              })
+                .then((res) => {
+                  if (res.status === 200) {
+                    setIsFollowing(!isFollowing);
+                  } else {
+                    toast.error(Errors.Common.Unexpected);
+                  }
+                })
+                .catch(() => toast.error(Errors.Common.Unexpected))
+                .finally(() =>
+                  setLoading((prev) => ({ ...prev, button: false }))
+                );
             }}
           >
-            {isFollowing ? "Unfollow" : "Follow"}
+            {loading.button ? (
+              <>
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                Loading
+              </>
+            ) : isFollowing ? (
+              "Unfollow"
+            ) : (
+              "Follow"
+            )}
           </Button>
         </div>
       </div>
