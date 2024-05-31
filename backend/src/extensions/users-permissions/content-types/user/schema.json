@@ -81,7 +81,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "profile_comments": {
       "type": "relation",
@@ -103,6 +105,9 @@
       "relation": "manyToMany",
       "target": "plugin::users-permissions.user",
       "via": "followers"
+    },
+    "about": {
+      "type": "text"
     }
   }
 }

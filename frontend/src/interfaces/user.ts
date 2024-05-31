@@ -14,6 +14,7 @@ export interface IUser {
   updatedAt: string;
   avatar: Avatar;
   profile_comments: IProfileComment[];
+  about: string;
   followings: IUser[];
   followers: IUser[];
 }

@@ -9,7 +9,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     try {
         const session = await getServerSession(authOptions);
         const blogSlug = req.nextUrl.searchParams.get("blogSlug");
-        const apiUrl = `${strapiUrl}/api/users/me?populate[0]=posts&populate[1]=posts.images&populate[2]=posts.tags&populate[3]=avatar`;
+        const apiUrl = `${strapiUrl}/api/users/me?populate[0]=posts&populate[1]=posts.images&populate[2]=posts.tags&populate[3]=avatar&populate[4]=followings`;
 
         if (!session?.user) {
             return new NextResponse("Unauthorized", { status: 401 });

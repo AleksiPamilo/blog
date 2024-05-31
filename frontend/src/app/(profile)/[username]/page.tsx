@@ -1,13 +1,16 @@
 "use client";
 
+import BlogCard from "@/components/BlogCard";
 import CommentSection from "@/components/CommentSection";
 import ErrorDisplay from "@/components/ErrorDisplay";
+import FollowButton from "@/components/FollowButton";
 import Loading from "@/components/Loading";
 import NotFound from "@/components/NotFound";
 import ProfileBlogCard from "@/components/Profile/BlogCard";
 import { Button } from "@/components/ui/button";
 import { Errors, IPost, IUser } from "@/interfaces";
 import { LoaderCircle } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -32,7 +35,8 @@ export default function Profile() {
     const slug = pathname.split("/")[1];
 
     fetch(
-      `${apiUrl}/users?slug=${slug}&populate=posts,posts.tags,posts.images,profile_comments,profile_comments.author,profile_comments.author.avatar,followers&filters=drafts`
+      `${apiUrl}/users?slug=${slug}&populate=posts,posts.tags,posts.images,profile_comments,profile_comments.author,profile_comments.author.avatar,followers&filters=drafts`,
+      { cache: "reload" }
     )
       .then(async (data) => {
         if (!data.ok) {
@@ -113,53 +117,29 @@ export default function Profile() {
       <div className="w-4/5 flex gap-2 items-center justify-between">
         <div>
           <h1 className="text-4xl font-semibold">{user.username}</h1>
-          <button
-            onClick={() => alert("Todo Follower Logic")}
+          <Link href={`${pathname}/followers`}
             className="text-md hover:underline"
           >
             Followers: {user.followers.length}
-          </button>
+          </Link>
         </div>
         <div>
-          <Button
-            disabled={loading.button}
-            onClick={() => {
-              setLoading((prev) => ({ ...prev, button: true }));
-              fetch(`/api/users/${isFollowing ? "unfollow" : "follow"}`, {
-                method: "POST",
-                body: JSON.stringify({
-                  id: user.id,
-                }),
-              })
-                .then((res) => {
-                  if (res.status === 200) {
-                    setIsFollowing(!isFollowing);
-                  } else {
-                    toast.error(Errors.Common.Unexpected);
-                  }
-                })
-                .catch(() => toast.error(Errors.Common.Unexpected))
-                .finally(() =>
-                  setLoading((prev) => ({ ...prev, button: false }))
-                );
+          <FollowButton
+            userId={user.id}
+            isFollowing={isFollowing}
+            onSuccess={() => {
+              fetchData();
             }}
-          >
-            {loading.button ? (
-              <>
-                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-                Loading
-              </>
-            ) : isFollowing ? (
-              "Unfollow"
-            ) : (
-              "Follow"
-            )}
-          </Button>
+            onError={(status) => {
+              if (status === 403) toast.error("You cannot follow yourself!")
+              else if (status === 500) toast.error(Errors.Common.Unexpected);
+            }}
+          />
         </div>
       </div>
-      <div className="w-4/5 flex flex-col gap-3">
+      <div className="w-4/5 flex flex-wrap gap-3">
         {sortedPosts.map((post) => (
-          <ProfileBlogCard user={user} post={post} key={post.slug} />
+          <BlogCard author={user} post={post} key={post.slug} />
         ))}
       </div>
       <div className="w-4/5 border border-zinc-200 p-4 mb-8 rounded-md shadow-md">
