@@ -1,3 +1,8 @@
+/**
+ * Returns a human-readable string representing the time elapsed since the given date.
+ * @param date - The date to compare to the current time.
+ * @returns A string indicating how long ago the date was.
+ */
 export const timeAgo = (date: string) => {
   const time = new Date(date).valueOf();
 
@@ -24,6 +29,11 @@ export const timeAgo = (date: string) => {
   }
 };
 
+/**
+ * Formats a date string into a locale-specific string representation including date and time.
+ * @param date - The date string to format.
+ * @returns A formatted string representing the date and time.
+ */
 export const formatTime = (date: string) => {
   return new Date(date).toLocaleString([], {
     day: "2-digit",
@@ -34,11 +44,16 @@ export const formatTime = (date: string) => {
   });
 };
 
+/**
+ * Formats a date string into the format DD.MM.YYYY.
+ * @param date - The date string to format.
+ * @returns A string representing the formatted date.
+ */
 export const formatDDMMYYYY = (date: string) => {
   const time = new Date(date);
   const currentDate = time.getDate();
   const currrentMonth = time.getMonth() + 1;
   const currentYear = time.getFullYear();
 
-  return currentDate + "-" + currrentMonth + "-" + currentYear;
+  return currentDate + "." + currrentMonth + "." + currentYear;
 };

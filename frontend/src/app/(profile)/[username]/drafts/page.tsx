@@ -68,7 +68,7 @@ export default function Drafts() {
     <div className="flex flex-col w-full gap-2 py-10">
       <div className="flex flex-wrap py-8 px-6 gap-6 w-full items-center justify-center">
         <div className="flex flex-col gap-y-4 max-w-max">
-          <div className="flex gap-y-2 max-md:flex-col items-center justify-between w-full">
+          <div className="flex gap-2 items-center justify-between w-full">
             <h1 className="text-xl font-semibold">Drafts</h1>
             <Radio
               onChange={(value) => sortDrafts(value)}
@@ -81,7 +81,7 @@ export default function Drafts() {
             />
           </div>
 
-          <div className="flex flex-wrap gap-3 items-center justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 items-center justify-center">
             {drafts.map((draft) => (
               <BlogCard post={draft} author={user} draft key={draft.slug} />
             ))}

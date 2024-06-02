@@ -1,19 +1,15 @@
 "use client";
 
-import BlogCard from "@/components/BlogCard";
 import CommentSection from "@/components/CommentSection";
 import ErrorDisplay from "@/components/ErrorDisplay";
 import FollowButton from "@/components/FollowButton";
 import Loading from "@/components/Loading";
 import NotFound from "@/components/NotFound";
-import ProfileBlogCard from "@/components/Profile/BlogCard";
-import { Button } from "@/components/ui/button";
-import { Errors, IPost, IUser } from "@/interfaces";
-import { LoaderCircle } from "lucide-react";
+import BlogCarousel from "@/components/carousel/BlogCarousel";
+import { IPost, IUser } from "@/interfaces";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -35,7 +31,7 @@ export default function Profile() {
     const slug = pathname.split("/")[1];
 
     fetch(
-      `${apiUrl}/users?slug=${slug}&populate=posts,posts.tags,posts.images,profile_comments,profile_comments.author,profile_comments.author.avatar,followers&filters=drafts`,
+      `${apiUrl}/users?slug=${slug}&populate=posts,posts.tags,posts.images,posts.author,profile_comments,profile_comments.author,profile_comments.author.avatar,followers&filters=drafts`,
       { cache: "reload" }
     )
       .then(async (data) => {
@@ -130,17 +126,11 @@ export default function Profile() {
             onSuccess={() => {
               fetchData();
             }}
-            onError={(status) => {
-              if (status === 403) toast.error("You cannot follow yourself!")
-              else if (status === 500) toast.error(Errors.Common.Unexpected);
-            }}
           />
         </div>
       </div>
-      <div className="w-4/5 flex flex-wrap gap-3">
-        {sortedPosts.map((post) => (
-          <BlogCard author={user} post={post} key={post.slug} />
-        ))}
+      <div className="w-4/5">
+        <BlogCarousel posts={sortedPosts} loop />
       </div>
       <div className="w-4/5 border border-zinc-200 p-4 mb-8 rounded-md shadow-md">
         <CommentSection data={user} />

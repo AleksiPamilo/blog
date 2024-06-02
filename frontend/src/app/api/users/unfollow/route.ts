@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       return new NextResponse("Bad Request", { status: 400 });
     }
 
-    let apiUrl = `${strapiUrl}/api/users-permissions/unfollowUser`;
+    let apiUrl = `${strapiUrl}/api/users-permissions/unfollow`;
 
     const fetchRes = await fetch(apiUrl, {
       method: "POST",

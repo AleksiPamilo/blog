@@ -6,6 +6,7 @@ import Login from "./auth/Login";
 import MobileNavigation from "./MobileNavigation";
 import { useSession } from "next-auth/react";
 import AvatarDropdown from "./AvatarDropdown";
+import generateNavItems from "@/common/NavItems";
 
 export default function Navigation() {
   const { data: session } = useSession();
@@ -16,7 +17,7 @@ export default function Navigation() {
         <div className="font-semibold text-2xl">LOGO</div>
         <div className="flex gap-4">
           <ul className="flex items-start justify-center gap-4">
-            {NavItems.map(({ name, path, icon }) => (
+            {generateNavItems().filter(item => !item.mobile).map(({ name, path, icon }) => (
               <Link
                 key={name}
                 href={path}

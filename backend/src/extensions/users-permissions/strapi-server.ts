@@ -23,20 +23,20 @@ export default (plugin) => {
         });
 
       if (!follower || !followee) {
-        return ctx.throw(404, "User not found");
+        ctx.throw(404, "User not found!");
       }
 
       if (follower.followings.some((user) => user.id === followeeId)) {
-        return ctx.throw(400, "Already following this user");
+        return ctx.throw(403, "Already following this user!");
       }
 
       const updatedFollowings = follower.followings
         ? [
-            ...new Set([
-              ...follower.followings.map((user) => user.id),
-              followeeId,
-            ]),
-          ]
+          ...new Set([
+            ...follower.followings.map((user) => user.id),
+            followeeId,
+          ]),
+        ]
         : [followeeId];
 
       await strapi.query("plugin::users-permissions.user").update({
@@ -48,11 +48,11 @@ export default (plugin) => {
 
       const updatedFollowers = followee.followers
         ? [
-            ...new Set([
-              ...followee.followers.map((user) => user.id),
-              followerId,
-            ]),
-          ]
+          ...new Set([
+            ...followee.followers.map((user) => user.id),
+            followerId,
+          ]),
+        ]
         : [followerId];
 
       await strapi.query("plugin::users-permissions.user").update({
@@ -92,11 +92,11 @@ export default (plugin) => {
         });
 
       if (!follower || !followee) {
-        return ctx.throw(404, "User not found");
+        ctx.throw(404, "User not found!");
       }
 
       if (!follower.followings.some((user) => user.id === followeeId)) {
-        return ctx.throw(400, "Not following this user");
+        return ctx.throw(403, "Not following this user!");
       }
 
       const updatedFollowings = follower.followings
@@ -144,7 +144,7 @@ export default (plugin) => {
         });
 
       if (!follower) {
-        return ctx.throw(404, "User not found");
+        ctx.throw(404, "User not found!");
       }
 
       const isFollowing = follower.followings.some(
@@ -160,7 +160,7 @@ export default (plugin) => {
   plugin.routes["content-api"].routes.push(
     {
       method: "POST",
-      path: "/followUser",
+      path: "/follow",
       handler: "user.followUser",
       config: {
         policies: ["global::preventSelfFollow"],
@@ -168,7 +168,7 @@ export default (plugin) => {
     },
     {
       method: "POST",
-      path: "/unfollowUser",
+      path: "/unfollow",
       handler: "user.unfollowUser",
       config: {
         policies: ["global::preventSelfFollow"],

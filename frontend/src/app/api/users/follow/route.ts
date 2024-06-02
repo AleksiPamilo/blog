@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       return new NextResponse("Bad Request", { status: 400 });
     }
 
-    let apiUrl = `${strapiUrl}/api/users-permissions/followUser`;
+    let apiUrl = `${strapiUrl}/api/users-permissions/follow`;
 
     const fetchRes = await fetch(apiUrl, {
       method: "POST",
@@ -31,7 +31,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
     });
 
     if (fetchRes.status !== 200) {
-      return new NextResponse(fetchRes.statusText, { status: fetchRes.status });
+      const json = await fetchRes.json();
+      return new NextResponse(JSON.stringify(json.error), { status: fetchRes.status });
     }
 
     return new NextResponse("User followed successfully", { status: 200 });

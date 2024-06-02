@@ -23,13 +23,19 @@ export default function FollowButton({ userId, isFollowing, onSuccess, onError }
                         id: userId,
                     }),
                 })
-                    .then((res) => {
+                    .then(async (res) => {
                         if (res.status === 200) {
                             setIsFollowing(!following);
+                            toast.success(await res.text());
                             onSuccess?.();
+                        } else if (res.status === 400) {
+                            const json = await res.json();
+
+                            if (json?.details?.errCode === "PREVENT_SELF_FOLLOW") {
+                                toast.error(json?.message);
+                            }
                         } else if (res.status === 403) {
-                            toast.error("You cannot follow yourself!");
-                            onError?.(403);
+                            toast.error(await res.text());
                         } else {
                             toast.error(Errors.Common.Unexpected);
                             onError?.(500);

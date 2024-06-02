@@ -12,15 +12,20 @@ import createSlug from "@/utils/createSlug";
 import { DefaultSession } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { useState } from "react";
 
 const style = "w-full cursor-pointer";
 
-export default function AvatarDropdown({ image, user }: { image?: string | null, user: DefaultSession["user"] }) {
+export default function AvatarDropdown({ image, user, text = false }: { image?: string | null, user: DefaultSession["user"], text?: boolean }) {
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <div>
-                    <Avatar image={image} user={user} className="hover:cursor-pointer hover:scale-105 hover:shadow-[0_0_5px_2px_#27272a]" />
+                <div className="flex gap-3 items-center hover:cursor-pointer group">
+                    <div className="group-hover:underline" hidden={!!!text}>My Profile</div>
+                    <div className="ring-2 ring-offset-2 rounded-full group-hover:ring-0">
+                        <Avatar image={image} user={user} className="group-hover:scale-105 group-hover:shadow-[0_0_5px_2px_#27272a]" />
+                    </div>
                 </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
