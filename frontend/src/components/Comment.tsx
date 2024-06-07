@@ -22,7 +22,7 @@ export default function Comment({ comment }: {
         <div className={`flex flex-col gap-4 md:gap-2 ${isProfileComment() ? "w-full" : "w-11/12"} bg-zinc-100 border border-zinc-200 p-3 relative rounded-xl ${isRight && !isProfileComment() && "self-end"}`}>
             <div className="flex max-md:gap-2 max-md:flex-col md:items-center justify-between ">
                 <div className="flex gap-2 items-center">
-                    <Avatar user={comment.author} image={strapiUrl + avatar.url} />
+                    <Avatar image={strapiUrl + avatar.url} />
                     <Link href={`/${comment.author.slug}`} className="hover:underline font-semibold">{comment.author.username}</Link>
                 </div>
                 <span>{timeAgo(comment.publishedAt)}</span>

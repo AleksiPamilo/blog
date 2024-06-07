@@ -36,7 +36,6 @@ export default function BlogCard({
       <Link
         href={`/${user.slug}${draft ? "/drafts" : ""}/${post.slug}`}
         className="grid grid-rows-6 w-full h-full rounded-3xl shadow-md"
-        passHref
       >
         <div className="w-full relative h-full border-b row-span-3">
           {image ?
@@ -60,9 +59,9 @@ export default function BlogCard({
           <div className="flex flex-wrap gap-2">
             <span className="flex gap-2 text-sm items-center">
               <PenLine className="w-5 h-5" />
-              <Link href={`/${user.slug}`} className="hover:underline">
+              <p>
                 {user.username}
-              </Link>
+              </p>
             </span>
 
             <span className="flex gap-2 text-sm items-center">

@@ -1,46 +1,77 @@
 "use client";
 
-import NavItems from "@/common/NavItems";
 import Link from "next/link";
-import Login from "./auth/Login";
-import MobileNavigation from "./MobileNavigation";
 import { useSession } from "next-auth/react";
 import AvatarDropdown from "./AvatarDropdown";
 import generateNavItems from "@/common/NavItems";
+import { Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Button, buttonVariants } from "./ui/button";
+import { usePathname } from "next/navigation";
+import Login from "./auth/Login";
 
 export default function Navigation() {
   const { data: session } = useSession();
+  const pathname = usePathname();
 
   return (
-    <>
-      <nav className="max-md:hidden w-full md:flex items-center justify-between py-3 px-6 bg-white rounded-b-lg">
-        <div className="font-semibold text-2xl">LOGO</div>
-        <div className="flex gap-4">
-          <ul className="flex items-start justify-center gap-4">
-            {generateNavItems().filter(item => !item.mobile).map(({ name, path, icon }) => (
+    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+      <nav className="hidden w-full flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+        <Link
+          href="#"
+          className="flex items-center gap-2 text-lg font-semibold md:text-base"
+        >
+          <h1 className="text-xl">LOGO</h1>
+        </Link>
+        {generateNavItems(session?.user.slug).map((item, index) => (
+          <Link
+            key={index}
+            href={item.path}
+            className={`text-muted-foreground hover:text-foreground ${pathname === item.path && "text-primary"}`}
+          >
+            {item.name}
+          </Link>
+        ))}
+      </nav>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className="shrink-0 md:hidden"
+          >
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Toggle navigation menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left">
+          <nav className="grid gap-6 text-lg font-medium">
+            {generateNavItems(session?.user.slug).map((item, index) => (
               <Link
-                key={name}
-                href={path}
-                className="flex items-center gap-2 rounded-lg px-3 py-2 text-zinc-700 font-medium hover:bg-zinc-100 hover:text-zinc-900"
+                key={index}
+                href={item.path}
+                className={`text-muted-foreground hover:text-foreground ${pathname === item.path && "text-primary"}`}
               >
-                <p className="w-6 h-6">{icon}</p>
-                <p>{name}</p>
+                {item.name}
               </Link>
+
             ))}
-          </ul>
-
-          {
-            !session?.user || !session?.user?.name
-              ? <Login />
-              : <AvatarDropdown image={session.user.image} user={session.user} />
-          }
-
-        </div>
-      </nav>
-
-      <nav className="max-md:block hidden">
-        <MobileNavigation />
-      </nav>
-    </>
+          </nav>
+        </SheetContent>
+      </Sheet>
+      <div className="flex w-full items-center gap-4 justify-end">
+        {session?.user
+          ? (
+            <>
+              <Link href="/create-post" className={buttonVariants({ variant: "outline", className: "hover:bg-blue-100" })}>
+                Create post!
+              </Link>
+              <AvatarDropdown user={session?.user} image={session?.user?.image} />
+            </>
+          )
+          : <Login />
+        }
+      </div>
+    </header>
   );
 }

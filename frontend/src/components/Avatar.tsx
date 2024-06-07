@@ -5,26 +5,19 @@ import {
 } from "./ui/avatar";
 
 import { DefaultSession } from "next-auth";
+import { CircleUser } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export default function Avatar({ image, user, className }: { image?: string | null, user: DefaultSession["user"], className?: string }) {
-    const fallbackText = user && user.name ? getFallback(user.name) : "";
-
+export default function Avatar({ image, className }: { image?: string | null, className?: string }) {
     return (
-        <ShadCnAvatar className={className}>
-            <AvatarImage src={image ?? undefined} />
-            <AvatarFallback>{fallbackText}</AvatarFallback>
+        <ShadCnAvatar className={cn("w-8 h-8 rounded-full", className)} >
+            <AvatarImage src={image ?? undefined} className="ring-2" />
+            <AvatarFallback>
+                <div className="w-full h-full flex items-center justify-center">
+                    <CircleUser className="w-full h-full" />
+                    <span className="sr-only">Toggle user menu</span>
+                </div>
+            </AvatarFallback>
         </ShadCnAvatar>
     )
-}
-
-function getFallback(username: string) {
-    const parts = username.split(" ");
-    if (parts.length === 1) {
-        return parts[0].charAt(0).toUpperCase();
-    } else {
-        return parts
-            .map((part) => part.charAt(0).toUpperCase())
-            .join("")
-            .slice(0, 2);
-    }
 }

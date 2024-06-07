@@ -5,6 +5,7 @@ export enum CommonErrors {
     ShortContent = "Content needs expansion.",
     LongContent = "Content needs trimming.",
     InternalServerError = "Internal Server Error.",
+    ValuesDontMatch = "Values do not match.",
 }
 
 export enum AuthErrors {

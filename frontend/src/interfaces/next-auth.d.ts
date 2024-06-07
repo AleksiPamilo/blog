@@ -5,6 +5,7 @@ declare module "next-auth" {
         user: {
             slug?: string;
             id?: number;
+            emailConfirmed?: boolean;
         } & DefaultSession["user"];
         jwt: string;
         id: number;

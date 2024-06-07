@@ -12,7 +12,6 @@ import createSlug from "@/utils/createSlug";
 import { DefaultSession } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { useState } from "react";
 
 const style = "w-full cursor-pointer";
 
@@ -23,9 +22,7 @@ export default function AvatarDropdown({ image, user, text = false }: { image?: 
             <DropdownMenuTrigger asChild>
                 <div className="flex gap-3 items-center hover:cursor-pointer group">
                     <div className="group-hover:underline" hidden={!!!text}>My Profile</div>
-                    <div className="ring-2 ring-offset-2 rounded-full group-hover:ring-0">
-                        <Avatar image={image} user={user} className="group-hover:scale-105 group-hover:shadow-[0_0_5px_2px_#27272a]" />
-                    </div>
+                    <Avatar image={image} />
                 </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
@@ -38,14 +35,9 @@ export default function AvatarDropdown({ image, user, text = false }: { image?: 
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href={"/@" + createSlug(user?.name!) + "/drafts"} className={style}>
-                            My Drafts
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <button className={style} onClick={() => alert("TODO : )\nThe other options work though!")}>
+                        <Link href="/settings" className={style}>
                             Settings
-                        </button>
+                        </Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

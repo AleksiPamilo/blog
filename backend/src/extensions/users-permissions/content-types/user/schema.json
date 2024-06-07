@@ -21,7 +21,7 @@
     },
     "email": {
       "type": "email",
-      "private": true,
+      "private": false,
       "minLength": 6,
       "configurable": false,
       "required": true

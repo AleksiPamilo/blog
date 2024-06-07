@@ -11,7 +11,7 @@ export default function UserCard({ user, isFollowing }: { user: IUser, isFollowi
         <div className="relative">
             <Link href={`/${user.slug}`} className="max-w-4/5 flex py-2 px-3 items-center justify-between gap-2 bg-zinc-100 border border-zinc-200 rounded-md shadow-md hover:bg-zinc-200">
                 <div className="flex items-center gap-2">
-                    <Avatar user={user} image={strapiUrl + user.avatar?.url} />
+                    <Avatar image={strapiUrl + user.avatar?.url} />
                     <p>{user.username}</p>
                 </div>
             </Link>

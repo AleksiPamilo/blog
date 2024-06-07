@@ -7,6 +7,7 @@ import Loading from "@/components/Loading";
 import NotFound from "@/components/NotFound";
 import BlogCarousel from "@/components/carousel/BlogCarousel";
 import { IPost, IUser } from "@/interfaces";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -21,6 +22,7 @@ export default function Profile() {
     button: false,
   });
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const { data: session } = useSession();
   const pathname = usePathname();
 
   const fetchData = useCallback(() => {
@@ -57,6 +59,8 @@ export default function Profile() {
           setUser(updatedUserData);
 
           try {
+            if (!session?.user) return;
+
             const res = await fetch(
               "/api/users/follow-status?id=" + updatedUserData.id
             );
@@ -124,7 +128,7 @@ export default function Profile() {
             userId={user.id}
             isFollowing={isFollowing}
             onSuccess={() => {
-              fetchData();
+              // fetchData();
             }}
           />
         </div>

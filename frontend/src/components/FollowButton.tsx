@@ -16,6 +16,8 @@ export default function FollowButton({ userId, isFollowing, onSuccess, onError }
         <Button
             disabled={userId === session?.user?.id || loading}
             onClick={() => {
+                if (!session?.user) return toast.error(Errors.Auth.Unauthorized);
+
                 setLoading(true);
                 fetch(`/api/users/${following ? "unfollow" : "follow"}`, {
                     method: "POST",

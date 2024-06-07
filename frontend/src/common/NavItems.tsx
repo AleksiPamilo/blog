@@ -4,7 +4,6 @@ type NavItemType = {
     name: string,
     path: string,
     icon?: JSX.Element,
-    mobile?: boolean,
 }
 
 const iconStyle = "w-full h-full";
@@ -26,11 +25,6 @@ const generateNavItems = (userSlug?: string): NavItemType[] => {
             path: "/newest",
             icon: <BellIcon className={iconStyle} />
         },
-        {
-            name: "Create Post",
-            path: "/create-post",
-            icon: <PenLine className={iconStyle} />
-        },
     ];
 
     if (userSlug) {
@@ -38,7 +32,6 @@ const generateNavItems = (userSlug?: string): NavItemType[] => {
             name: "My Drafts",
             path: `/${userSlug}/drafts`,
             icon: <FilePenLine className={iconStyle} />,
-            mobile: true,
         });
     }
 

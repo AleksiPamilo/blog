@@ -17,7 +17,7 @@ export function Breadcrumbs() {
     const pathNames = paths.split('/').filter(path => path)
 
     return (
-        <div className="max-md:hidden flex items-center justify-center capitalize">
+        <div className="max-md:hidden flex items-center justify-center capitalize mt-2">
             <div className="w-4/5">
                 <Breadcrumb>
                     <BreadcrumbList>

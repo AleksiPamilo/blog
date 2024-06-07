@@ -5,6 +5,7 @@ interface CustomUser extends User {
     jwt?: string;
     username?: string;
     slug?: string;
+    emailConfirmed?: boolean;
 }
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -49,10 +50,12 @@ export const authOptions: NextAuthOptions = {
                     const userJson = await res.json();
                     const avatarUrl = userJson.data[0]?.avatar?.url;
                     const slug = userJson.data[0]?.slug;
-                    
+
                     return {
                         id: user.id,
                         name: user.username,
+                        email: user.email,
+                        emailConfirmed: user.emailConfirmed,
                         image: avatarUrl ? String(strapiUrl + avatarUrl) : null,
                         slug: slug,
                         jwt: jwt,
@@ -78,6 +81,12 @@ export const authOptions: NextAuthOptions = {
                 if (typeof token.id === "number") {
                     session.user.id = token.id;
                 }
+                if (token.email) {
+                    session.user.email = token.email;
+                }
+                if (typeof token.emailConfirmed === "boolean") {
+                    session.user.emailConfirmed = token.emailConfirmed;
+                }
             }
 
             return Promise.resolve(session);
@@ -94,6 +103,12 @@ export const authOptions: NextAuthOptions = {
             }
             if (typeof (user as CustomUser)?.slug === "string") {
                 token.slug = (user as CustomUser).slug;
+            }
+            if (typeof (user as CustomUser)?.email === "string") {
+                token.email = (user as CustomUser).email;
+            }
+            if (typeof (user as CustomUser)?.emailConfirmed === "boolean") {
+                token.emailConfirmed = (user as CustomUser).emailConfirmed;
             }
 
             return Promise.resolve(token);

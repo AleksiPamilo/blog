@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitOptions } from "@/app/create-post/page";
+import { SubmitOptions } from "@/app/(layout)/create-post/page";
 import Editor from "@/components/Editor/Editor";
 import ErrorDisplay from "@/components/ErrorDisplay";
 import Loading from "@/components/Loading";
