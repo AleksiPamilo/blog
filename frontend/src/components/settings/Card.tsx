@@ -4,11 +4,12 @@ import { Input } from "../ui/input";
 import { useState } from "react";
 import { Errors } from "@/interfaces";
 
-export default function SettingsCard({ title, description, placeholder, confirmValue, onSave, onError }: {
+export default function SettingsCard({ title, description, placeholder, confirmValue, errorMessage, onSave, onError }: {
     title: string;
     description: string;
     placeholder?: string;
     confirmValue?: boolean;
+    errorMessage?: string;
     onSave?: (value: string | null) => void;
     onError?: (err: string) => void;
 }) {
@@ -56,7 +57,7 @@ export default function SettingsCard({ title, description, placeholder, confirmV
             <CardContent className="space-y-2">
                 <Input placeholder={placeholder ?? title} onChange={e => setValue(String(e.target.value))} />
                 {confirmValue && <Input placeholder={`Confirm ${placeholder ?? title}`} onChange={e => setConfirm(String(e.target.value))} />}
-                {error && <p className="text-red-500">{error}</p>}
+                {(error || errorMessage) && <p className="text-red-500">{errorMessage ?? error}</p>}
             </CardContent>
             <CardFooter className="border-t px-6 py-4">
                 <Button onClick={handleSave}>Save</Button>

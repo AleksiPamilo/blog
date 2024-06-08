@@ -38,7 +38,7 @@ export default function SettingsLayout({
                             href="/"
                             className="text-muted-foreground transition-colors hover:text-foreground"
                         >
-                            Home
+                            Blog
                         </Link>
 
                         <Link

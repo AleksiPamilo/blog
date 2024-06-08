@@ -108,6 +108,9 @@
     },
     "about": {
       "type": "text"
+    },
+    "lastUsernameChange": {
+      "type": "datetime"
     }
   }
 }
