@@ -11,11 +11,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const { newUsername } = await req.json();
 
         if (!session) {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return new NextResponse(JSON.stringify({ error: { message: "Unauthorized" }, status: 401 }));
+        }
+
+        if (!session?.user?.emailConfirmed) {
+            return new NextResponse(JSON.stringify({ error: { message: "You need to verify your email address to change your username!" }, status: 403 }));
         }
 
         if (!newUsername) {
-            return new NextResponse("Bad request: 'newUsername' missing!", { status: 403 });
+            return new NextResponse(JSON.stringify({ error: { message: "Bad request: 'newUsername' missing!" }, status: 403 }));
         }
 
         const response = await fetch(strapiUrl + "/api/users-permissions/changeUsername", {

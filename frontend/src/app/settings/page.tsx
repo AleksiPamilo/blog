@@ -40,6 +40,7 @@ export default function Settings() {
                         setErrors(null);
                     }
                 }}
+
                 errorMessage={errors?.username ?? undefined}
             />
 
