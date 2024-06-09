@@ -55,7 +55,11 @@ export default function SettingsCard({ title, description, placeholder, confirmV
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-                <Input placeholder={placeholder ?? title} onChange={e => setValue(String(e.target.value))} />
+                <Input placeholder={placeholder ?? title} onChange={e => setValue(String(e.target.value))} onKeyDown={e => {
+                    if (e.key === "Enter") {
+                        handleSave();
+                    }
+                }} />
                 {confirmValue && <Input placeholder={`Confirm ${placeholder ?? title}`} onChange={e => setConfirm(String(e.target.value))} />}
                 {(error || errorMessage) && <p className="text-red-500">{errorMessage ?? error}</p>}
             </CardContent>

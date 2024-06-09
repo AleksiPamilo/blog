@@ -1,5 +1,3 @@
-import { sanitize } from "@strapi/utils";
-
 export default (plugin) => {
   plugin.controllers.user.followUser = async (ctx) => {
     const { followeeId } = ctx.request.body;
@@ -170,6 +168,20 @@ export default (plugin) => {
     if (!newUsername || !slug) {
       return ctx.throw(403, "New username is required!");
     }
+
+    const minLength = 3;
+    const maxLength = 30;
+    const validCharacters = /^(?!.* {2})[a-zA-Z0-9_ ]+$/;
+
+    if (newUsername.length < minLength || newUsername.length > maxLength) {
+      return ctx.throw(403, { message: "Username must be between 3 and 30 characters long." });
+    }
+
+    if (!validCharacters.test(newUsername)) {
+      return ctx.throw(403, { message: "Username can only contain alphanumeric characters and underscores." });
+    }
+
+    // TODO: prohibited words
 
     try {
       const usernameExists = await strapi

@@ -24,6 +24,8 @@ export default function Settings() {
                 placeholder={session.user.name ?? undefined}
                 description="Your username will be displayed publicly on the platform. Choose a unique identifier that represents you or your business."
                 onSave={async (value) => {
+                    setErrors(prev => ({ ...prev, username: null }));
+
                     const res = await fetch("/api/users/changeUsername", {
                         method: "POST",
                         body: JSON.stringify({
